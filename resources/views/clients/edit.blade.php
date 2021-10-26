@@ -13,10 +13,10 @@
 
 <div class="flex justify-center pt-2" >
 
-    <form action="/clients/{{ $clients->id }}" method="POST">
+    <form action="/clients/update/{{ $clients->id }}" method="POST">
         
         @csrf
-        @method('PUT')
+       
         <div class="block">
             <input
             type="text"

@@ -128,7 +128,7 @@
                 @endif
                 
                     
-                    <td class="text-sm font-bold px-6 py-4"><b>{{ number_format((float) $total, 2 ) }} rsd</b></td>
+                    <td class="text-sm font-bold px-6 py-4"><b>{{ number_format((float) $invoices->total(), 2 ) }} rsd</b></td>
                 </tr> 
 
                

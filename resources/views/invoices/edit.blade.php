@@ -9,7 +9,7 @@
 
         <form action="/invoices/{{ $invoice->id }}" method="POST">
             @csrf
-            @method('PUT')
+           
             <div class="block">
                 <input
                 type="text"

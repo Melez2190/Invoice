@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Invoice;
+use App\Models\Item;
 
 
 
@@ -14,12 +16,34 @@ class ClientsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clients = Client::all()->where('user_id', '=', auth()->user()->id);
+        $name = $request->input('client_name');
+        $city = $request->input('city');
+        $email = $request->input('email');
+        $taxnumber = $request->input('tax_number');
+        $idnumber = $request->input('id_number');
 
-       
-        return view('clients.index', [
+        $data = Client::where('user_id', '=', auth()->user()->id);
+
+        if (isset($name)) {
+            $data->where('name', 'like', "%" . $name . "%");
+        }
+        if (isset($city)) {
+            $data->where('city', 'like', "%" . $city . "%");
+        }
+        if (isset($email)) {
+            $data->where('email', 'like', "%" . $email . "%");
+        }
+        if (isset($taxnumber)) {
+            $data->where('tax_number', 'like', "%" . $taxnumber . '%');
+        }
+        if (isset($idnumber)) {
+            $data->where('id_number', 'like', "%" . $idnumber . '%');
+        }
+        $clients = $data->paginate(5);
+    
+         return view('clients.index', [
             'clients' => $clients
         ]);
     }
@@ -71,10 +95,13 @@ class ClientsController extends Controller
     public function show($id)
     {
         
+        $items = Item::all()->where('invoice_id','=', $id);
+        
         $client = Client::find($id);
         if(auth()->user()->id === $client->user_id){
         return view('clients.show', [
-            'client' => $client
+            'client' => $client,
+            'items' => $items
         ]);
     }else {
         return redirect('/clients');

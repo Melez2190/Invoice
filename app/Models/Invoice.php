@@ -16,7 +16,7 @@ class Invoice extends Model
     public function client() {
         return $this->belongsTo(Client::class, 'client_id');
     }
-
+   
     public function userOwner(){
         return $this->hasOneThrough(
             User::class,
@@ -29,10 +29,15 @@ class Invoice extends Model
         return $this->hasMany(Item::class);
     }
 
-    // public static function total($item){
-    //     return  ($item->quantity * $item->price)+(($item->quantity * $item->price)/100)*$item->pdv;
-        
-    // }
-   
+    public function total() {
+        $items = $this->items;
+        $total = 0;
+        foreach($items as $item){
+            $total += ($item->quantity * $item->price)+(($item->quantity * $item->price)/100)*$item->pdv;
+            
+
+        }
+        return $total;
+    }
 
 }

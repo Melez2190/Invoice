@@ -14,8 +14,10 @@
 
 <div class="flex justify-center pt-2" >
 
-    <form action="/invoices" method="POST">
+    <form action="/invoices/store" method="POST">
         @csrf
+        {{-- @method('GET') --}}
+        
         <div class="block">
             
             <select name="client_id">

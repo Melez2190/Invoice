@@ -3,6 +3,65 @@
 @section('content')
 
 <div class="ml-44">
+
+  <table class="mb-12 w-full">
+        
+    <form class="mb-8" action="/clients/search" method="GET">
+      <thead class="mb-6">
+       <tr class=" mb-8">
+         <th class="text-left">
+           <p>Company name<p>
+         </th>
+         <th class="text-left">
+          City
+         </th>
+         <th class="text-left">
+           Email
+         </th>
+         <th class="text-left">
+           Tax Number
+         </th>
+         <th class="text-left">
+           ID number
+         </th>
+       </tr>
+      </thead>
+      <tbody class="">
+        <tr>
+          <td>
+      <input class="w-36 mb-8 mt-6 p-2" type="text" name="client_name" placeholder="Search company" value="{{ request('client_name') }}">
+
+          </td>
+          <td class="ml-8">
+          
+            <input type="text" name="city" placeholder="City" class=" w-36 mb-8 mt-6 p-2"  value="{{ request('city') }}">
+          </td>
+          <td>
+            <input type="text" name="email" placeholder="Email" class="w-36 mb-8 mt-6 p-2"  value="{{ request('email') }}">
+          </td>
+          <td>
+            <input type="text" name="tax_number" placeholder="Tax number" class="w-36 mb-8 mt-6 p-2" value="{{ request('tex_number') }}">
+          </td>
+          <td>
+            <input type="text" name="id_number" placeholder="Id number" class="w-36 mb-8 mt-6 p-2" value="{{ request('id_number') }}">
+          </td>
+          
+          <td>
+            <button type="submit" class="bg-blue-900 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold">
+              Search
+            </button>
+          </td>
+        </tr>
+      </tbody>
+     
+     
+     
+      
+      
+     
+     
+    </form>
+  </table>
     <table class="w-full table-fixed border-separate  border border-solid border-black-800 my-4">
         
 
@@ -45,6 +104,7 @@
             
         </tr>
         @endforeach
+      
               <script src="https://unpkg.com/@popperjs/core@2.9.1/dist/umd/popper.min.js" charset="utf-8"></script>
               <script>
                 function openDropdown(event,dropdownID){
@@ -70,5 +130,8 @@
 
     </table>
 </div>
+<div class="w-96 float-right">
+  {{ $clients->links() }}
 
+</div>
 @endsection

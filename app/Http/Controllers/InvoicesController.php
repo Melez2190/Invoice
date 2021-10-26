@@ -14,14 +14,42 @@ class InvoicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-       
-        $invoices = Invoice::whereRelation('client', 'user_id', '=', auth()->user()->id)->get();
+
+        $name = $request->input('client_name');
+        $dateof = $request->input('date_of_issue');
+        $dateto = $request->input('to_date_of_issue');
+        $datevaluta = $request->input('valuta');
+        $button = $request->input('status_false');
+        $buttontrue = $request->input('status_true');
+    
+        $data = Invoice::whereRelation('client', 'user_id', '=', auth()->user()->id);
+        if (isset($name)) {
+            $data->whereRelation('client', 'name', 'like', "%" . $name . "%");
+        }
+        if (isset($dateof)) {
+            $data->where('date_of_issue', '>=',  $dateof );
+        }
+        if (isset($dateto)) {
+            $data->where('date_of_issue', '<=',  $dateto );
+        }
+        if (isset($datevaluta)) {
+            $data->where('valuta', '<=', $datevaluta );
+        }
+        if (isset($button) ){
+            $data->where('status', '=', $button );
+        }
+        if (isset($buttontrue) ){
+            $data->where('status', '=', $buttontrue );
+        }
+        $invoices = $data->paginate(5);
         
+   
         
             return view('invoices.index', [
                 'invoices' => $invoices
+                
                
                 
     
@@ -86,19 +114,13 @@ class InvoicesController extends Controller
        
         $items = Item::where('invoice_id', '=', $id)->get();
         $items1 = Item::all();
-        $total = 0;
-        foreach($items1 as $item){
-            $total += ($item->quantity * $item->price)+(($item->quantity * $item->price)/100)*$item->pdv;
-            
-
-        }
         
        
         if(auth()->user()->id === $client->user_id){
             return view('invoices.show', [
                 'invoices' => $invoices,
                 'items' => $items,
-                'total' => $total
+                
 
             ]);
         }else {
@@ -193,5 +215,18 @@ class InvoicesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function search(Request $request)
+    {
+        
+       
+            $name = $request->input('client_name');
+            $invoices = Invoice::whereRelation('client', 'user_id', '=', auth()->user()->id)->get();
+
+            $data = Invoice::where('client', 'name', 'LIKE', '%' .$name .'%')->get();
+        
+       
     }
 }
