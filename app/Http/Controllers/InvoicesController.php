@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Client;
 use App\Models\Item;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\InvoiceStoreRequest;
+
 
 class InvoicesController extends Controller
 {
@@ -23,8 +26,9 @@ class InvoicesController extends Controller
         $datevaluta = $request->input('valuta');
         $button = $request->input('status_false');
         $buttontrue = $request->input('status_true');
-    
+        
         $data = Invoice::whereRelation('client', 'user_id', '=', auth()->user()->id);
+      
         if (isset($name)) {
             $data->whereRelation('client', 'name', 'like', "%" . $name . "%");
         }
@@ -43,16 +47,12 @@ class InvoicesController extends Controller
         if (isset($buttontrue) ){
             $data->where('status', '=', $buttontrue );
         }
-        $invoices = $data->paginate(5);
+        $invoices = $data->paginate(10);
         
-   
+
         
-            return view('invoices.index', [
+         return view('invoices.index', [
                 'invoices' => $invoices
-                
-               
-                
-    
             ]);
         
        
@@ -64,14 +64,17 @@ class InvoicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Invoice $invoice)
     {
-        $clients = Client::all()->where('user_id', '=', auth()->user()->id);
         
-        return view('invoices.create', [
-            'clients'  => $clients
-        ]);
+        $clients = Client::where('user_id', '=', auth()->user()->id)->get();
+        
+         return view('invoices.create', [
+                'clients'  => $clients
+            ]);
+       
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -79,24 +82,14 @@ class InvoicesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $client = Invoice::create([
+    public function store(InvoiceStoreRequest $request)
+    {      
+    
+        $validate = $request->validated();
+       
+        Invoice::create($validate);
+        return redirect("/invoices");
         
-            
-            'client_id' => $request->input('client_id'),
-            'description'      => $request->input('description'),
-            'quantity'      => $request->input('quantity'),
-            'price'   => $request->input('price'),
-            'pdv'  => $request->input('pdv'),
-            'status'     => $request->input('status'),
-            'date_of_issue' => $request->input('date_of_issue'),
-            'valuta'=> $request->input('valuta')
-            
-        ]);
-        
-        
-        return redirect('/invoices');
     }
 
     /**
@@ -107,16 +100,14 @@ class InvoicesController extends Controller
      */
     public function show($id)
     {
-
+       
         $invoices = Invoice::find($id);
-        $client = Client::find($id);
         
-       
+        
+     
         $items = Item::where('invoice_id', '=', $id)->get();
-        $items1 = Item::all();
         
-       
-        if(auth()->user()->id === $client->user_id){
+        if(auth()->user()->id === $invoices->client->user_id){
             return view('invoices.show', [
                 'invoices' => $invoices,
                 'items' => $items,
@@ -149,29 +140,6 @@ class InvoicesController extends Controller
             'client' => $client
         ]);
 
-        // return view('invoices.edit')->with('invoices', $invoice);
-       
-       
-        // $invoice = Invoice::find($id);
-        // if($invoice->status === '1'){
-        //     $invoice->update([
-        //         'status' => '0'
-        // ]);
-
-
-        // }else {
-        //     $invoice->update([
-        //         'status' => '1'
-        //     ]);
-
-        // }
-        
-// dd($invoice);
-        
-
-      
-
-       
     }
 
     /**
@@ -195,13 +163,6 @@ class InvoicesController extends Controller
                 
             ]);
         }
-       
-       
-
-       
-       
-
-            
         return redirect('/invoices');
 
     }
@@ -218,15 +179,5 @@ class InvoicesController extends Controller
     }
 
 
-    public function search(Request $request)
-    {
-        
-       
-            $name = $request->input('client_name');
-            $invoices = Invoice::whereRelation('client', 'user_id', '=', auth()->user()->id)->get();
-
-            $data = Invoice::where('client', 'name', 'LIKE', '%' .$name .'%')->get();
-        
-       
-    }
+  
 }

@@ -3,7 +3,10 @@
 @section('content')
 
 <div class="ml-44">
-    
+   
+    <button class="bg-red-500 mt-8 ml-auto mr-12 block text-white shadow-5xl mb-10 p-2 w-48 uppercase font-bold">
+        <a href="/download-pdf/{{ $invoices->id }}">Download PDF</a>
+    </button>
 <div class="w-full h-0.5 bg-indigo-500"></div>
 <div class="flex justify-between p-4">
     <div>
@@ -152,7 +155,7 @@
 
 <div class="flex justify-center p-4">
     <div class="border-b border-gray-200 shadow">
-        <form action="/items" method="POST">
+        <form action="/items/store" method="POST">
             @csrf
             
         <table class="">
@@ -160,6 +163,7 @@
                 <tr>
                     <th class="px-4 py-2  text-lefttext-xs text-gray-500 ">
                         <input type="hidden" name="invoice_id" value="{{ $invoices->id }}" >
+
                     </th>
                     <th class="px-4 py-2  text-left text-xs text-gray-500 ">
                         Description
@@ -186,18 +190,25 @@
                     <td class="px-6 py-4">
                         <div class="text-sm text-gray-900">
                             <input type="text" name="description" placeholder="description">
+                            @if($errors->has('description'))
+                            <p class="text-xs text-red-500">{{ $errors->first('description') }}</div>
+                         @endif
 
                         </div>
                     </td>
                     <td class="px-6 py-4">
                         <div class="text-sm text-gray-500">
                             <input type="integer" name="quantity" placeholder="Quantity">
-
+                            @if($errors->has('quantity'))
+                            <p class="text-xs text-red-500">{{ $errors->first('quantity') }}</div>
+                         @endif
                         </div>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-500">
                         <input type="integer" name="price" placeholder="Price">
-
+                        @if($errors->has('price'))
+                        <p class="text-xs text-red-500">{{ $errors->first('price') }}</div>
+                     @endif
                     </td>
                     <td class="px-6 py-4">
                         <input type="number" name="pdv" placeholder="Tax" value="18">

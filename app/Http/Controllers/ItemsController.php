@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ItemStoreRequest;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Models\Item;
+use App\Models\Client;
 
 
 class ItemsController extends Controller
@@ -46,20 +48,12 @@ class ItemsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ItemStoreRequest $request)
     {
-        $item = Item::create([
-        
-            
-            'invoice_id' => $request->input('invoice_id'),
-            'description'      => $request->input('description'),
-            'quantity'      => $request->input('quantity'),
-            'price'   => $request->input('price'),
-            'pdv'  => $request->input('pdv'),
-           
-            
-            
-        ]);
+        $validate = $request->validated();
+       
+        $item = Item::create($validate);
+
         
         
         return redirect("/invoices/$item->invoice_id");
@@ -73,7 +67,7 @@ class ItemsController extends Controller
      */
     public function show($id)
     {
-     
+   
     }
 
     /**

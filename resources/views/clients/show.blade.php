@@ -3,6 +3,7 @@
 
 @section('content')
 
+
 <div class="ml-44">
 <div class="text-center w-full">
     <table class="w-full border ">
@@ -60,7 +61,7 @@
                     {{ $client->phone_number }}
                 </td>
                 <td>
-                   
+                    <p class="text-red-500">{{ number_format((float) $total, 2 ) }} rsd </p>
                 </td>
             </tr>
         </tbody>

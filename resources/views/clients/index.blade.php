@@ -82,7 +82,7 @@
 
         <tr>
 
-            <td class=" text-left m-2 border-separate border-b-2"><a href="clients/{{ $client->id }}" > {{ $client->name }} </a></td>
+            <td class=" text-left m-2 border-separate border-b-2"><a href="/clients/{{ $client->id }}" > {{ $client->name }} </a></td>
         
             <td class=" text-left m-2 border-separate border-b-2">{{ $client->city }}</td>
             <td class=" text-left m-2 border-separate border-b-2">{{ $client->address }}</td>

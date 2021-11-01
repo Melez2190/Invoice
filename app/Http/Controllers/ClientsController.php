@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Item;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ClientStoreRequest;
 
 
 
@@ -41,7 +43,7 @@ class ClientsController extends Controller
         if (isset($idnumber)) {
             $data->where('id_number', 'like', "%" . $idnumber . '%');
         }
-        $clients = $data->paginate(5);
+        $clients = $data->paginate(10);
     
          return view('clients.index', [
             'clients' => $clients
@@ -66,22 +68,15 @@ class ClientsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClientStoreRequest $request)
     {
-        $client = Client::create([
-            'user_id' => auth()->user()->id,
-            'name'      => $request->input('name'),
-            'city'      => $request->input('city'),
-            'address'   => $request->input('address'),
-            'account_number'  => $request->input('account_number'),
-            'id_number'  => $request->input('id_number'),
-            'tax_number'  => $request->input('tax_number'),
-            'zip_code'  => $request->input('zip_code'),
-            'email'     => $request->input('email'),
-            'phone_number'=> $request->input('phone_number')
-            
-        ]);
-        
+        $validated = $request->validated();
+        // dd(auth()->user()->id);
+        $userId = auth()->user()->id;
+        $validated = $request->validated();
+        $validated['user_id'] = $userId;
+        Client::create($validated);
+       
         
         return redirect('/clients');
     }
@@ -94,14 +89,21 @@ class ClientsController extends Controller
      */
     public function show($id)
     {
+         $data = Item::whereRelation('invoices', 'status', '=', false)->whereRelation('invoices', 'client_id', '=', $id)->get();
+         $total = 0;
         
-        $items = Item::all()->where('invoice_id','=', $id);
+        foreach ($data as $one){
+            $total += (($one->quantity * $one->price) + (($one->quantity * $one->price)/100 * $one->pdv));
+
+        }
+         $client = Client::find($id);
         
-        $client = Client::find($id);
         if(auth()->user()->id === $client->user_id){
         return view('clients.show', [
             'client' => $client,
-            'items' => $items
+            'data' => $data,
+            'total' =>$total
+          
         ]);
     }else {
         return redirect('/clients');

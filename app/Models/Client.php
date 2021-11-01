@@ -16,6 +16,27 @@ class Client extends Model
     public function invoice() {
         return $this->hasMany(Invoice::class);
     }
+    public function itemsOwner(){
+        return $this->hasOneThrough(
+            Invoice::class,
+            Item::class,
+           
+        );
+    }
+    public function items() {
+        return $this->hasMany(Item::class);
+    }
+
+  public function totalSum(){
+      $items = $this->itemsOwner;
+      $total = 0;
+        dd($items);
+      foreach ($items as $one){
+          $total += (($one->quantity * $one->price) + (($one->quantity * $one->price)/100 * $one->pdv));
+
+      }
+      return $total;
+  }
 
     
 }

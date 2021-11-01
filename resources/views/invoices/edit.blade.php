@@ -7,7 +7,7 @@
         
 
 
-        <form action="/invoices/{{ $invoice->id }}" method="POST">
+        <form action="/invoices/update/{{ $invoice->id }}" method="POST">
             @csrf
            
             <div class="block">

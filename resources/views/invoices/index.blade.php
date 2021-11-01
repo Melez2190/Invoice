@@ -38,7 +38,7 @@
               <input type="date" name="date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2 text-right"  value="{{ request('date_of_issue') }}">
             </td>
             <td>
-              <input type="date" name="to_date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2"  value="{{ request('date_of_issue') }}">
+              <input type="date" name="to_date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2" ">
             </td>
             <td>
               <input type="date" name="valuta" placeholder="Search date-valuta" class="mb-8 mt-6 p-2" value="{{ request('valuta') }}">
@@ -85,7 +85,7 @@
         <tr>
           
           
-            <td class=" text-left m-2 border-separate border-b-2"><a href="clients/{{ $invoice->client->id }}" > {{ $invoice->client->name }} </a></td>
+            <td class=" text-left m-2 border-separate border-b-2"><a href="/clients/{{ $invoice->client->id }}" > {{ $invoice->client->name }} </a></td>
                 
             
         
@@ -107,7 +107,7 @@
             <a href="/invoices/{{ $invoice->id }}/edit">Edit</a>
             <a href="/invoices/{{ $invoice->id }}">View</a>
             <a href="/invoices/{{ $invoice->id }}/edit">
-              <form action="/invoices/{{ $invoice->id }}" method="POST" >
+              <form action="/invoices/update/{{ $invoice->id }}" method="POST" >
                
                 @csrf
                
@@ -134,7 +134,7 @@
 
     </table>
 </div>
-<div class="w-96 float-right">
+<div class="w-96 mr-12 float-right">
   {{ $invoices->links() }}
 
 </div>
