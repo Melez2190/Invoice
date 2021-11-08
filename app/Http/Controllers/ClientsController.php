@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
-use App\Models\Invoice;
 use App\Models\Item;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ClientStoreRequest;
 
 
@@ -43,7 +41,7 @@ class ClientsController extends Controller
         if (isset($idnumber)) {
             $data->where('id_number', 'like', "%" . $idnumber . '%');
         }
-        $clients = $data->paginate(10);
+        $clients = $data->orderBy('name')->paginate(10);
     
          return view('clients.index', [
             'clients' => $clients
@@ -89,21 +87,15 @@ class ClientsController extends Controller
      */
     public function show($id)
     {
-         $data = Item::whereRelation('invoices', 'status', '=', false)->whereRelation('invoices', 'client_id', '=', $id)->get();
-         $total = 0;
-        
-        foreach ($data as $one){
-            $total += (($one->quantity * $one->price) + (($one->quantity * $one->price)/100 * $one->pdv));
+        $client = Client::find($id);
 
-        }
-         $client = Client::find($id);
+         $data = Item::whereRelation('invoices', 'status', '=', false)->whereRelation('invoices', 'client_id', '=', $id)->get();
+      
         
         if(auth()->user()->id === $client->user_id){
         return view('clients.show', [
             'client' => $client,
             'data' => $data,
-            'total' =>$total
-          
         ]);
     }else {
         return redirect('/clients');
@@ -132,7 +124,7 @@ class ClientsController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $client = Client::where('id', $id)->update([
+        Client::where('id', $id)->update([
             'user_id' => auth()->user()->id,
             'name'      => $request->input('name'),
             'city'      => $request->input('city'),
@@ -146,7 +138,6 @@ class ClientsController extends Controller
             
         ]);
         return redirect('/clients');
-
     }
 
     /**
@@ -157,6 +148,7 @@ class ClientsController extends Controller
      */
     public function destroy($id)
     {
-        //
+         Client::find($id)->delete();
+         return redirect("/clients");  
     }
 }

@@ -6,6 +6,9 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\EmpController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ItemsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MailController;
+
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\DynamicPdfController;
 
@@ -37,6 +40,7 @@ Route::get('/clients/{id}/edit', [\App\Http\Controllers\ClientsController::class
 Route::post('/clients/update/{id}', [\App\Http\Controllers\ClientsController::class, 'update'])->name('update');
 Route::get('/clients/search', [\App\Http\Controllers\ClientsController::class, 'index'])->name('index');
 Route::get('/clients/{id}',  [\App\Http\Controllers\ClientsController::class, 'show']);
+Route::post('/clients/delete/{client}', [ClientsController::class, 'destroy'])->name('destroy');
 
 
 Route::get('/invoices', [\App\Http\Controllers\InvoicesController::class, 'index'])->name('index');
@@ -46,9 +50,23 @@ Route::get('/invoices/{id}/edit', [\App\Http\Controllers\InvoicesController::cla
 Route::post('/invoices/update/{id}', [\App\Http\Controllers\InvoicesController::class, 'update']);
 Route::get('/invoices/search', [\App\Http\Controllers\InvoicesController::class, 'index'])->name('index');
 Route::get('/invoices/{id}', [\App\Http\Controllers\InvoicesController::class, 'show']);
+Route::post('/invoice/delete/{client}', [InvoicesController::class, 'destroy'])->name('destroy');
+
 
 Route::get('/items/create', [\App\Http\Controllers\ItemsController::class, 'create'])->name('create');
 Route::post('/items/store', [\App\Http\Controllers\ItemsController::class, 'store'])->name('store');
+Route::post('/item/delete/{client}', [ItemsController::class, 'destroy'])->name('destroy');
+Route::get('/items/{id}/edit', [\App\Http\Controllers\ItemsController::class, 'edit']);
+Route::post('/items/update/{id}', [\App\Http\Controllers\ItemsController::class, 'update']);
+
+Route::get('/user/statistics', [UserController::class, 'stats']);
+Route::get('/user/stats', [\App\Http\Controllers\UserController::class, 'stats']);
+
+Route::get('/send-email/{invoice}', [MailController::class, 'sendEmail']);
+
+
+
+
 
 
 Route::get('/pdf', [\App\Http\Controllers\DynamicPdfController::class, 'index'])->name('index');

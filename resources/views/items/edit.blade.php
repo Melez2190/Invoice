@@ -5,15 +5,16 @@
 <div class="ml-44">
 <div class="flex justify-center p-4">
     <div class="border-b border-gray-200 shadow">
-        <form action="/items/{{ $item->id }}" method="POST">
+       
+        <form action="/items/update/{{ $item->id }}" method="POST">
             @csrf
-            @method('PUT')
+            
             
         <table class="">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-4 py-2  text-lefttext-xs text-gray-500 ">
-                        <input type="hidden" name="invoice_id" value="{{ $invoice->id }}" >
+                        <input type="hidden" name="invoice_id" value="{{ $invoice }}" >
                     </th>
                     <th class="px-4 py-2  text-left text-xs text-gray-500 ">
                         Description
@@ -59,8 +60,8 @@
 
                     </td>
                     <td class="px-6 py-4">
-                    <button type="submit" class="bg-blue-900 mt-8 block text-white shadow-5xl mb-10 p-2 w-12 uppercase font-bold">
-                        Add
+                    <button type="submit" class="bg-blue-900 mt-8 block text-white shadow-5xl mb-10 p-2 w-24 uppercase font-bold">
+                        Save
                     </button>
                     </td>
                 </tr>

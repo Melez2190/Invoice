@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="ml-44">
+<div class="ml-48">
 
   <table class="mb-12 w-full">
         
@@ -96,7 +96,12 @@
                 <div class="dropdown-content">
                 <a href="clients/{{ $client->id }}/edit">Edit</a>
                 <a href="clients/{{ $client->id }}">View</a>
-                <a href="#">Link 3</a>
+                <form action="/clients/delete/{{ $client->id }}" method="POST">
+                  @csrf
+                 
+                  <a href=""><input type="submit" value="Delete" ></a>
+                
+              </form>
                 </div>
               </div>
               

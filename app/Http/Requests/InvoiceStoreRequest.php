@@ -27,7 +27,7 @@ class InvoiceStoreRequest extends FormRequest
         return [
             'client_id' => 'required',
             'date_of_issue' => 'required|date',
-            'valuta' => 'required|date',
+            'valuta' => 'required|date|after_or_equal:date_of_issue'
             
 
         ];

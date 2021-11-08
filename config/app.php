@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'name_app' => env('APP_NAME', 'Quantoxinvoice'),
+
     'asset_url' => env('ASSET_URL', null),
 
     /*

@@ -24,11 +24,12 @@ class InvoicesController extends Controller
         $dateof = $request->input('date_of_issue');
         $dateto = $request->input('to_date_of_issue');
         $datevaluta = $request->input('valuta');
+        $todatevaluta = $request->input('tovaluta');
         $button = $request->input('status_false');
         $buttontrue = $request->input('status_true');
         
         $data = Invoice::whereRelation('client', 'user_id', '=', auth()->user()->id);
-      
+     
         if (isset($name)) {
             $data->whereRelation('client', 'name', 'like', "%" . $name . "%");
         }
@@ -39,7 +40,10 @@ class InvoicesController extends Controller
             $data->where('date_of_issue', '<=',  $dateto );
         }
         if (isset($datevaluta)) {
-            $data->where('valuta', '<=', $datevaluta );
+            $data->where('valuta', '>=', $datevaluta );
+        }
+        if (isset($todatevaluta)) {
+            $data->where('valuta', '<=', $todatevaluta );
         }
         if (isset($button) ){
             $data->where('status', '=', $button );
@@ -47,16 +51,11 @@ class InvoicesController extends Controller
         if (isset($buttontrue) ){
             $data->where('status', '=', $buttontrue );
         }
-        $invoices = $data->paginate(10);
+        $invoices = $data->orderBy('date_of_issue', 'DESC')->paginate(10);
         
-
-        
-         return view('invoices.index', [
+        return view('invoices.index', [
                 'invoices' => $invoices
             ]);
-        
-       
-        
     }
 
     /**
@@ -100,27 +99,17 @@ class InvoicesController extends Controller
      */
     public function show($id)
     {
-       
         $invoices = Invoice::find($id);
-        
-        
-     
         $items = Item::where('invoice_id', '=', $id)->get();
         
         if(auth()->user()->id === $invoices->client->user_id){
             return view('invoices.show', [
                 'invoices' => $invoices,
                 'items' => $items,
-                
-
             ]);
         }else {
             return redirect('invoices');
         }
-            
-
-        
-
     }
   
 
@@ -175,9 +164,7 @@ class InvoicesController extends Controller
      */
     public function destroy($id)
     {
-        //
+         Invoice::find($id)->delete();
+         return redirect("/invoices");
     }
-
-
-  
 }

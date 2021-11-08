@@ -15,7 +15,7 @@ class Invoice extends Model
     protected $fillable = ['client_id', 'date_of_issue', 'valuta'];
     
     public function client() {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Client::class, 'client_id');
     }
     public function user() {
         return $this->client->user;

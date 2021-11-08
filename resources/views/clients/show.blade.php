@@ -61,7 +61,10 @@
                     {{ $client->phone_number }}
                 </td>
                 <td>
-                    <p class="text-red-500">{{ number_format((float) $total, 2 ) }} rsd </p>
+                    @foreach ($data as $one)
+                    <a href="/invoices/{{ $one->invoice_id }}" > 
+                    @endforeach
+                    <p class="text-red-500">{{ number_format((float) $client->totalSum(), 2 ) }} rsd </p></a>
                 </td>
             </tr>
         </tbody>

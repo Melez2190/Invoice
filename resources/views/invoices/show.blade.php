@@ -2,19 +2,30 @@
  
 @section('content')
 
-<div class="ml-44">
-   
-    <button class="bg-red-500 mt-8 ml-auto mr-12 block text-white shadow-5xl mb-10 p-2 w-48 uppercase font-bold">
-        <a href="/download-pdf/{{ $invoices->id }}">Download PDF</a>
-    </button>
+<div class="ml-48">
+   <div class="relative h-24">
+        <button class="bg-red-500 absolute right-4 text-white shadow-5xl mb-10 p-2 w-48 uppercase font-bold">
+            <a href="/download-pdf/{{ $invoices->id }}">Download PDF</a>
+        </button>
+        <button class="bg-green-500 absolute right-48 mr-12 block text-white shadow-5xl mb-10 p-2 w-48 uppercase font-bold">
+            <a href="/send-email/{{ $invoices->id }}">Send Email</a>
+        </button>
+   </div>
 <div class="w-full h-0.5 bg-indigo-500"></div>
 <div class="flex justify-between p-4">
     <div>
         <h6 class="font-bold">Date of issue : <span class="text-sm font-medium">{{ $invoices->date_of_issue}}</span></h6>
         <h6 class="font-bold">Valuta : <span class="text-sm font-medium">{{ $invoices->valuta }}</span></h6>
+        <h6 class="font-bold">Status :  
+             @if($invoices->status )
+                <span class="text-green-700">Paid</span>
+             @else
+                <span class="text-red-700">Not paid</span>
+            @endif
+        </h6>
     </div>
     
-    <div class="w-40 float-right ml-auto">
+    <div class="w-44 float-right ml-auto mr-12">
         <address class="text-sm">
             <span class="font-bold">Client:</span>
             <p>{{ $invoices->client->name }} </p>
@@ -48,15 +59,15 @@
                     <th class="px-4 py-2 text-left text-xs text-gray-500 ">
                         Tax
                     </th>
-                  
                     <th class="px-4 py-2 text-left text-xs text-gray-500 ">
                         Total
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 " >
-                        Status
-                    </th>
                     <th class="px-4 py-2 text-left text-xs text-gray-500 ">
-                        Action
+                        Delete
+                    </th>
+                  
+                    <th class="px-4 py-2 text-left text-xs text-gray-500 ">
+                        Edit
                     </th>
                 </tr>
             </thead>
@@ -97,22 +108,29 @@
 
                       
                     </td>
-                    <td>
+                    <td class="px-6 py-4 text-red-500">
+                        <form action="/item/delete/{{ $item->id }}" method="POST">
+                            @csrf
+                                 
+                            <a href=""><input type="submit" class="bg-white" value="&rarr; Remove" ></a>
+                          
+                        </form>
+                        
+                    </td>
+                    {{-- <td>
                         @if($invoices->status )
                         <span class="text-green-700">Paid</span>
                     @else
                         <span class="text-red-700">Not paid</span>
                     </td>
-                    @endif
-                    <td><div class="dropdown">
-                        <button class="dropbtn">Actions</button>
-                        <div class="dropdown-content">
-                        <a href="/items/{{ $item->id }}/edit">Edit</a>
-                        <a href="/invoices/{{ $invoices->id }}">View</a>
-                        <a href="/invoices/{{ $invoices->id }}/edit">Change status</a>
-                        </div>
-                      </div>
-                      
+                    @endif --}}
+                    <td class="text-l text-blue-900">
+                       
+                       
+                        <a href="/items/{{ $item->id }}/edit" >&rarr; Edit</a>
+                        
+                        {{-- <a href="/invoices/{{ $invoices->id }}/edit">Change status</a> --}}
+                        
                     </td>
                 </tr>
                 
@@ -222,30 +240,12 @@
                 </tr>
                 
                
-                {{-- <tr class="">
-                    <td colspan="3"></td>
-                    <td class="text-sm font-bold">Sub Total</td>
-                    <td class="text-sm font-bold tracking-wider"><b>$950</b></td>
-                </tr>
-                <!--end tr-->
-                <tr>
-                    <th colspan="3"></th>
-                    <td class="text-sm font-bold"><b>Tax Rate</b></td>
-                    <td class="text-sm font-bold"><b>$1.50%</b></td>
-                </tr>
-                <!--end tr-->
-                <tr class="text-white bg-gray-800">
-                    <th colspan="3"></th>
-                    <td class="text-sm font-bold"><b>Total</b></td>
-                    <td class="text-sm font-bold"><b>$999.0</b></td>
-                </tr> --}}
-                <!--end tr-->
-
             </tbody>
         </table>
     </form>
 
     </div>
+    
 </div>
 </div>
 </div>

@@ -13,24 +13,22 @@ class Client extends Model
     protected $fillable = ['user_id', 'name', 'city', 'address', 'account_number', 'id_number', 'zip_code', 'tax_number', 'email', 'phone_number'];
 
 
-    public function invoice() {
+    public function invoices() {
         return $this->hasMany(Invoice::class);
     }
-    public function itemsOwner(){
-        return $this->hasOneThrough(
-            Invoice::class,
-            Item::class,
-           
-        );
-    }
-    public function items() {
-        return $this->hasMany(Item::class);
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function items() {
+        return $this->hasManyThrough(Item::class, Invoice::class);
+    }
+  
+
   public function totalSum(){
-      $items = $this->itemsOwner;
+      $items = $this->items;
       $total = 0;
-        dd($items);
+        
       foreach ($items as $one){
           $total += (($one->quantity * $one->price) + (($one->quantity * $one->price)/100 * $one->pdv));
 

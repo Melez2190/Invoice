@@ -3,7 +3,7 @@
 @section('content')
 
 
-<div class="ml-44">
+<div class="ml-48">
    
        <table class="mb-12 w-full">
         
@@ -115,9 +115,18 @@
                 0 
                 @else
                 1
-            @endif">  <button name="btn-status" type="submit" >
+            @endif">  
+            <button name="btn-status" type="submit" >
               Change
-          </button> </form></a>
+            </button> 
+
+          </form></a>
+          <form action="/invoice/delete/{{ $invoice->id }}" method="POST">
+            @csrf
+                 
+            <a href=""><input type="submit" value="Delete" ></a>
+          
+        </form>
             </div>
           </div>
           

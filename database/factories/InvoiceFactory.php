@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Models\Invoice;
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
+
 
 class InvoiceFactory extends Factory
 {
@@ -26,13 +28,28 @@ class InvoiceFactory extends Factory
         foreach ($clients as $id) {
             $ids[] = $id;
         }
-        return [
-            'client_id' => array_rand(array_flip($ids)),
-            'date_of_issue' => $this->faker->date(),
-            'valuta' => $this->faker->date(),
-            'status' => 0
 
+        foreach(range(1, 120) as $index)
+        {
 
-        ];
+            $year = rand(2009, 2016);
+            $month = rand(1, 12);
+            $day = rand(1, 28);
+
+            $date = Carbon::create($year,$month ,$day , 0, 0, 0);
+
+         
+            return [
+                'client_id' => array_rand(array_flip($ids)),
+                'date_of_issue' => Carbon::create($year,$month ,$day , 0, 0, 0),
+                'valuta'  => $date->addWeeks(rand(1, 260)),
+                'status' => 0
+    
+    
+            ];
+        }
+
+      
     }
+   
 }

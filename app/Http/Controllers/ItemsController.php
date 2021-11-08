@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ItemStoreRequest;
-use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Models\Item;
-use App\Models\Client;
+
 
 
 class ItemsController extends Controller
@@ -20,13 +19,9 @@ class ItemsController extends Controller
     {
         $items = Item::whereRelation('invoice_id', '=', 'id')->get();
 
-        
-        
         return view('invoices.show', [
             'items' => $items
-            
-
-        ]);
+         ]);
     }
 
     /**
@@ -36,9 +31,6 @@ class ItemsController extends Controller
      */
     public function create()
     {
-        
-
-       
         return view('items.create');
     }
 
@@ -53,9 +45,6 @@ class ItemsController extends Controller
         $validate = $request->validated();
        
         $item = Item::create($validate);
-
-        
-        
         return redirect("/invoices/$item->invoice_id");
     }
 
@@ -78,11 +67,12 @@ class ItemsController extends Controller
      */
     public function edit($id)
     {
-        $invoice = Invoice::find($id);
+        
+        $invoice_id = Item::where('id', '=', $id)->first()->invoice_id;
         $item = Item::find($id);
 
         return view('/items.edit',[
-            'invoice' => $invoice,
+            'invoice' => $invoice_id,
             'item' => $item
         ]);
     }
@@ -96,8 +86,8 @@ class ItemsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $invoice = Invoice::find($id);
-
+        $items = Item::where('id', '=', $id)->first()->invoice_id;
+       
         $item = Item::where('id', $id)->update([
             'invoice_id' => $request->input('invoice_id'),
            'description'      => $request->input('description'),
@@ -107,7 +97,7 @@ class ItemsController extends Controller
           
            
        ]);
-       return redirect("/invoices/$invoice->id");
+       return redirect("/invoices/$items");
 
 
    }
@@ -118,8 +108,13 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Item $item)
     {
-        //
+        $items = Item::where('id', '=', $id)->first();
+       
+        Item::find($id)->delete();
+        
+        return redirect("/invoices/$items->invoice_id");
+           
     }
 }

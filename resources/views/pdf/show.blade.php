@@ -38,7 +38,7 @@
             background-color: #60A7A6;
             color: #FFF;
         }
-        .information .logo {
+        .information {
             margin: 5px;
         }
         .information table {
@@ -73,9 +73,15 @@
             
         }
         .table-data{
-            border-bottom: 1px solid gray;
+            /* border-bottom: 1px solid gray; */
             
         }
+        .valute{
+            margin-top: 50px;
+            margin-left: 15px;
+
+        }
+        
     </style>
 
 </head>
@@ -85,7 +91,8 @@
     <table width="100%">
         <tr>
             <br /><br /> <br />
-            <td align="left" style="width: 40%;">
+            <td align="left" style="width: 40%;" class="proba">
+                Seller:
                 <h3>{{ $user->name }}</h3>
                 <h4>{{ $user->email }}</h4>
              
@@ -111,8 +118,8 @@ Status: @if($invoices->status )
                 <img src="/path/to/logo.png" alt="Logo" width="64" class="logo"/>
             </td> --}}
             <td align="right" style="width: 30%;">
-
-                <h3 class="client-info"><strong align="left" > Client: </strong></h3><p class="client-text" > {{ $invoices->client->name }}  </p>
+                Buyer:
+                <h3 class="client-info"><strong align="left" > </strong></h3><p class="client-text" > {{ $invoices->client->name }}  </p>
               
                    <p class="client-info"><strong align="left" >Email: </strong>{{ $invoices->client->email }}</p>
 
@@ -192,15 +199,15 @@ Status: @if($invoices->status )
         </tfoot>
     </table>
 </div>
-
+<div class="valute">Please pay until: <strong>{{ $invoices->valuta }} </strong></div>
 <div class="information" style="position: absolute; bottom: 0;">
     <table width="100%">
         <tr>
             <td align="left" style="width: 50%;">
-                &copy; {{ date('Y') }} {{ config('app.url') }} - All rights reserved.
+                &copy; {{ date('Y') }} {{ config('app.name_app') }} - All rights reserved.
             </td>
             <td align="right" style="width: 50%;">
-                Company Slogan
+                The world is drawn by ideas
             </td>
         </tr>
 
