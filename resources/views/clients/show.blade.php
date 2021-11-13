@@ -5,6 +5,7 @@
 
 
 <div class="ml-44">
+    
 <div class="text-center w-full">
     <table class="w-full border ">
         <thead class="text-left border">
@@ -20,20 +21,18 @@
                 <th>
                     City
                 </th>
-                <th>
-                    Tax Number:
-                </th>
-                <th>
-                    ID number:
-                </th>
+               
                 <th>
                     Email:
                 </th>
                 <th>
-                    Phone number
+                   Not paid  Invoices
                 </th>
                 <th>
-                    For paid
+                    Total for paid
+                </th>
+                <th>
+                    Total Paid
                 </th>
             </tr>
         </thead>
@@ -48,23 +47,23 @@
                 <td>
                     {{ $client->city }}
                 </td>
-                <td>
-                    {{ $client->tax_number }}
-                </td>
-                <td>
-                    {{ $client->id_number }}
-                </td>
+              
                 <td>
                     {{ $client->email }}
                 </td>
                 <td>
-                    {{ $client->phone_number }}
+                    @foreach ($invoices as $invoice)
+                      
+                  
+                            <a class="block text-red-500 " href="/invoices/{{ $invoice->id }}" >InvoiceID {{ $invoice->id }}  </a>
+
+                            
+                        
+                    @endforeach
                 </td>
                 <td>
-                    @foreach ($data as $one)
-                    <a href="/invoices/{{ $one->invoice_id }}" > 
-                    @endforeach
-                    <p class="text-red-500">{{ number_format((float) $client->totalSum(), 2 ) }} rsd </p></a>
+                  
+                    <p class="text-red-500">{{ number_format((float) $client->totalSum(), 2 ) }} rsd </p>
                 </td>
             </tr>
         </tbody>

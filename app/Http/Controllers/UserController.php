@@ -18,11 +18,12 @@ class UserController extends Controller
 
         $datefrom = $request->input('date_of_issue');
         $dateto = $request->input('to_date_of_issue');
+        $valuta = $request->input('valuta');
 
         $clients = Client::where('user_id', '=', auth()->user()->id)->count();
         $invoices = Invoice::where('status', '=', '1')->whereRelation('client', 'user_id', "=", $user->id);
     
-    
+        
 
         
 
@@ -32,6 +33,7 @@ class UserController extends Controller
         if (isset($dateto)) {
             $invoices->where('date_of_issue', '<=',  $dateto );
         }
+       
         $totalpaid = $invoices->with('items')->get();
         $totalincome = 0;
         
@@ -53,16 +55,15 @@ class UserController extends Controller
         foreach($notpaidInv as $notpaid){
             $notpaidtotal += $notpaid->total();
         }
-      
-      
+       
        
         return view('user.statistics', [
+            'user' => $user,
             'paid' => $totalincome,
             'notpaid' => $notpaidtotal,
             'countclient' => $clients,
             'totalpaidinv' => $invoices->count(),
-            'totalnotpaid' => $invoicesnotpaid->count()
-         
+            'totalnotpaid' => $invoicesnotpaid->count(),
         ]);
     }
     /**

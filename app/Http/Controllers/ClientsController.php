@@ -6,6 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Item;
 use App\Http\Requests\ClientStoreRequest;
+use App\Models\Invoice;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\InvoiceStoreRequest;
+
+use App\Models\User;
+use Illuminate\Validation\Rules\In;
+use Barryvdh\DomPDF\PDF as PDF;
+use Illuminate\Support\Facades\Redirect;
 
 
 
@@ -16,35 +24,20 @@ class ClientsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $name = $request->input('client_name');
-        $city = $request->input('city');
-        $email = $request->input('email');
-        $taxnumber = $request->input('tax_number');
-        $idnumber = $request->input('id_number');
-
         $data = Client::where('user_id', '=', auth()->user()->id);
 
-        if (isset($name)) {
-            $data->where('name', 'like', "%" . $name . "%");
-        }
-        if (isset($city)) {
-            $data->where('city', 'like', "%" . $city . "%");
-        }
-        if (isset($email)) {
-            $data->where('email', 'like', "%" . $email . "%");
-        }
-        if (isset($taxnumber)) {
-            $data->where('tax_number', 'like', "%" . $taxnumber . '%');
-        }
-        if (isset($idnumber)) {
-            $data->where('id_number', 'like', "%" . $idnumber . '%');
-        }
-        $clients = $data->orderBy('name')->paginate(10);
+        $clients = $data->filter(request([
+            'client_name',
+            'city',
+            'email',
+            'tax_number',
+            'id_number'
+        ]))->orderBy('name')->paginate(10);
     
          return view('clients.index', [
-            'clients' => $clients
+            'clients' => $clients->withQueryString()
         ]);
     }
 
@@ -89,13 +82,16 @@ class ClientsController extends Controller
     {
         $client = Client::find($id);
 
-         $data = Item::whereRelation('invoices', 'status', '=', false)->whereRelation('invoices', 'client_id', '=', $id)->get();
-      
+        $data = Item::whereRelation('invoices', 'status', '=', false)->whereRelation('invoices', 'client_id', '=', $id)->get();
         
+        $invoices = Invoice::where('client_id', '=', $id)->where('status', '=', false)->with('items')->get('id');
+        
+
         if(auth()->user()->id === $client->user_id){
         return view('clients.show', [
             'client' => $client,
             'data' => $data,
+            'invoices' => $invoices
         ]);
     }else {
         return redirect('/clients');

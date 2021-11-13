@@ -3,7 +3,12 @@
 @section('content')
 
 <div class="ml-48">
+    <div class="mb-12">
 
+        <p> <strong> User: </strong> {{ $user->name }}</p>
+       <p> <strong> Email: </strong> {{ $user->email }}</p>
+
+    </div>
     <table class="mb-12 w-full">
         
         <form class="mb-8" action="/user/stats" method="GET">
@@ -15,34 +20,30 @@
                   <th class="text-left">
                     To date of issue
                   </th>
+                  
                 </tr>
                </thead>
                <tbody class="">
                 <tr>
-                 
-                  <td class="ml-8">
-                  
-                    <input type="date" name="date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2 text-right"  value="{{ request('date_of_issue') }}">
-                  </td>
-                  <td>
-                    <input type="date" name="to_date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2" value="{{ request('to_date_of_issue') }}">
-                  </td>
-                
-                <td>
-                    <button type="submit" class="bg-blue-900 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold">
-                      Search
-                    </button>
-                  </td>
+                    
+                    <td class="ml-8">
+                        <input type="date" name="date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2 text-right"  value="{{ request('date_of_issue') }}">
+                    </td>
+                    <td>
+                        <input type="date" name="to_date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2" value="{{ request('to_date_of_issue') }}">
+                    </td>
+                    <td>
+                        <input type="date" name="valuta"  class="mb-8 mt-6 p-2" value="{{ request('valuta') }}">
+                    </td>
+                    <td>
+                        <button type="submit" class="bg-blue-900 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold">
+                            Search
+                        </button>
+                    </td>
                 </tr>
               </tbody>
              
-             
-             
-              
-              
-             
-             
-            </form>
+             </form>
           </table>
 
 
@@ -55,6 +56,9 @@
                 </th>
                 <th class="border text-right">   
                     Total not paid
+                </th>
+                <th class="border text-right">
+                    Expired invoices
                 </th>
             </tr>
 
@@ -72,6 +76,9 @@
                     {{ number_format((float) $notpaid, 2 ) }} <span class=""> rsd </span>
 
 
+               </td>
+               <td>
+                   {{ $invoicesValuta }}
                </td>
 
             </tr>

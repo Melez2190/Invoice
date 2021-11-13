@@ -37,8 +37,8 @@ class DynamicPDFController extends Controller
     
     $items = $invoice->items;
     view()->share(['invoices' => $invoice, 'items'=>$items,  'user'=>$clients]);
-     $pdf = app('dompdf.wrapper');
-     $pdf->loadView('pdf.show');
+     $pdf = app('dompdf.wrapper' );
+     $pdf->loadView('pdf.show',['invoices' => $invoice, 'items'=>$items,  'user'=>$clients]);
      return $pdf->download('recipt.pdf');
     }
 

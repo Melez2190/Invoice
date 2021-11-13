@@ -35,22 +35,22 @@
             </td>
             <td class="ml-8">
             
-              <input type="date" name="date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2 text-right"  value="{{ request('date_of_issue') }}">
+              <input type="date" name="date_of_issue"  class="mb-8 mt-6 p-2 text-right"  value="{{ request('date_of_issue') }}">
             </td>
             <td>
-              <input type="date" name="to_date_of_issue" placeholder="Search date of issue" class="mb-8 mt-6 p-2" ">
+              <input type="date" name="to_date_of_issue"  class="mb-8 mt-6 p-2" value="{{ request('to_date_of_issue') }}">
             </td>
             <td>
               <input type="date" name="valuta" placeholder="Search date-valuta" class="mb-8 mt-6 p-2" value="{{ request('valuta') }}">
             </td>
             <td>
-              <input type="date" name="tovaluta" placeholder="Search date-valuta" class="mb-8 mt-6 p-2" value="{{ request('valuta') }}">
+              <input type="date" name="tovaluta" placeholder="Search date-valuta" class="mb-8 mt-6 p-2" value="{{ request('tovaluta') }}">
             </td>
             <td>
               <button type="submit" class="bg-green-500 text-white shadow-5xl ml-2 mb-2 p-2 w-24 uppercase font-bold" name="status_true" value="1"> PAID </button>
             </td>
             <td>
-              <button type="submit" class="bg-red-500 ml-2 mr-2 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold" name="status_false" value="0"> NOT PAID </button>
+              <button type="submit" class="bg-red-500 ml-2 mr-2 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold" name="status_0" value="0"> NOT PAID </button>
             </td>
             <td>
               <button type="submit" class="bg-blue-900 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold">
@@ -80,6 +80,7 @@
               
             </tr>
         </thead>
+        
 @foreach ($invoices as $invoice)
 
         <tr>

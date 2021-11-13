@@ -32,6 +32,40 @@ class Invoice extends Model
         return $this->hasMany(Item::class);
     }
 
+    public function scopeFilter($query, array $filters)
+    {
+      
+       
+        $query->when($filters['client_name'] ?? false, fn ($query, $client_name)=>
+            $query
+                ->whereRelation('client', 'name', 'like', '%' . $client_name . '%'));
+        
+        $query->when($filters['date_of_issue'] ?? false, fn ($query, $date_of_issue)=>
+            $query
+                ->where('date_of_issue', '>=', $date_of_issue ));
+
+        $query->when($filters['to_date_of_issue'] ?? false, fn ($query, $to_date_of_issue)=>
+            $query
+                ->where('date_of_issue', '<=', $to_date_of_issue ));
+
+        $query->when($filters['valuta'] ?? false, fn ($query, $valuta)=>
+            $query
+                ->where('valuta', '>=', $valuta ));
+
+        $query->when($filters['tovaluta'] ?? false, fn ($query, $tovaluta)=>
+            $query
+                ->where('valuta', '<=', $tovaluta ));
+
+        $query->when($filters['status_true'] ?? false, fn ($query, $status_true)=>
+            $query
+                ->where('status', '=', $status_true ));
+
+        $query->when($filters['status_0'] ?? false, fn($query, $status_0)=>
+            $query
+                ->where('status', '=', $status_0));
+
+      
+    }
     public function total() {
         $items = $this->items;
         $total = 0;

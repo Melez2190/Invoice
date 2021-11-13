@@ -17,44 +17,22 @@ class InvoicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-
-        $name = $request->input('client_name');
-        $dateof = $request->input('date_of_issue');
-        $dateto = $request->input('to_date_of_issue');
-        $datevaluta = $request->input('valuta');
-        $todatevaluta = $request->input('tovaluta');
-        $button = $request->input('status_false');
-        $buttontrue = $request->input('status_true');
-        
         $data = Invoice::whereRelation('client', 'user_id', '=', auth()->user()->id);
-     
-        if (isset($name)) {
-            $data->whereRelation('client', 'name', 'like', "%" . $name . "%");
-        }
-        if (isset($dateof)) {
-            $data->where('date_of_issue', '>=',  $dateof );
-        }
-        if (isset($dateto)) {
-            $data->where('date_of_issue', '<=',  $dateto );
-        }
-        if (isset($datevaluta)) {
-            $data->where('valuta', '>=', $datevaluta );
-        }
-        if (isset($todatevaluta)) {
-            $data->where('valuta', '<=', $todatevaluta );
-        }
-        if (isset($button) ){
-            $data->where('status', '=', $button );
-        }
-        if (isset($buttontrue) ){
-            $data->where('status', '=', $buttontrue );
-        }
-        $invoices = $data->orderBy('date_of_issue', 'DESC')->paginate(10);
         
+        $invoices = $data->filter(request([
+            'client_name',
+            'date_of_issue',
+            'to_date_of_issue',
+            'valuta',
+            'tovaluta',
+            'status_true',
+            'status_0'
+        ]))->paginate(10);
+            
         return view('invoices.index', [
-                'invoices' => $invoices
+                'invoices' =>$invoices->withQueryString()
             ]);
     }
 

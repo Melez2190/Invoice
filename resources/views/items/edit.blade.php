@@ -67,25 +67,7 @@
                 </tr>
                 
                
-                {{-- <tr class="">
-                    <td colspan="3"></td>
-                    <td class="text-sm font-bold">Sub Total</td>
-                    <td class="text-sm font-bold tracking-wider"><b>$950</b></td>
-                </tr>
-                <!--end tr-->
-                <tr>
-                    <th colspan="3"></th>
-                    <td class="text-sm font-bold"><b>Tax Rate</b></td>
-                    <td class="text-sm font-bold"><b>$1.50%</b></td>
-                </tr>
-                <!--end tr-->
-                <tr class="text-white bg-gray-800">
-                    <th colspan="3"></th>
-                    <td class="text-sm font-bold"><b>Total</b></td>
-                    <td class="text-sm font-bold"><b>$999.0</b></td>
-                </tr> --}}
-                <!--end tr-->
-
+               
             </tbody>
         </table>
     </form>
