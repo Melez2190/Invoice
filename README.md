@@ -12,16 +12,16 @@
 
 Follow the steps below to install this project on your local computer
 
-1.First clone with the command git clone https://github.com/Melez2190/Invoice.git or simply download the zipped file
+1.First clone with the command :  'git clone https://github.com/Melez2190/Invoice.git' or simply download the zipped file
 
 2.In mysql create a database "database_name"
 
 3.Then in the .env file in DB_DATABASE change the database name to your "database_name"
 
 4.The next step is to install the tailwind via the composer:
-composer require laravel-frontend-presets / tailwindcss --dev
-php artisan ui tailwindcss --auth
-npm install && npm run dev
+    1.composer require laravel-frontend-presets / tailwindcss --dev
+    2.php artisan ui tailwindcss --auth
+    3.npm install && npm run dev
 
 5.php artisan serve 
 
