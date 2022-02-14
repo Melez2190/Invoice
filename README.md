@@ -42,9 +42,10 @@ or simply download the zipped file
 ## Download invoice in pdf
 
 For the option to download the invoice in pdf format, install via composer
-barryvdh / laravel-dompdf
+barryvdh / laravel-dompdf :     
 
-composer require barryvdh/laravel-dompdf
+composer require barryvdh/laravel-dompdf     
+
 
 For more information, see [Barryvdh/laravel-dompdf](https://github.com/barryvdh/laravel-dompdf).
 
