@@ -43,10 +43,10 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
 
     public function findById(int $id)
     {
-        try {
-            return $this->model->findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            return null;
+        if($this->model->find($id)){
+            return $this->model->find($id);
+        }else {
+            return abort(404);
         }
     }
     public function store(array $data)
@@ -62,6 +62,7 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
             ]);
         }
     }
+
     public function updaterest($request, $id)
     {
         if(isset($_POST['btn-ostalo'])){

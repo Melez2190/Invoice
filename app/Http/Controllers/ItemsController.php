@@ -6,8 +6,7 @@ use App\Http\Requests\ItemStoreRequest;
 use Illuminate\Http\Request;
 use App\Services\ItemService;
 use App\Models\Item;
-
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ItemsController extends Controller
 {
@@ -73,9 +72,13 @@ class ItemsController extends Controller
      */
     public function edit($id)
     {
-        
-        $invoice_id = Item::where('id', '=', $id)->first()->invoice_id;
-        $item = Item::find($id);
+        if($this->itemService->findById($id)){
+            $invoice_id = $this->itemService->findById($id)->invoice_id;
+        }else {
+            return abort(404);
+        }
+
+        $item = $this->itemService->findById($id);
 
         return view('/items.edit',[
             'invoice' => $invoice_id,
@@ -115,10 +118,9 @@ class ItemsController extends Controller
 
     public function restore($id)
     {
-        Item::withTrashed()->find($id)->restore();
-        $invoice = Item::where('id', $id)->first()->invoice_id;
-
-
+        $this->itemService->restore($id);
+        $invoice = $this->itemService->findById($id)->invoice_id;
+    
         return redirect("invoices/$invoice");
     }
 

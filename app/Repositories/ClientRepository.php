@@ -6,7 +6,7 @@ use App\Models\Client;
 use App\Repositories\Interfaces\ClientRepositoryInterface;
 use App\Repositories\Interfaces\RepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ClientRepository implements RepositoryInterface, ClientRepositoryInterface
 {
@@ -43,10 +43,10 @@ class ClientRepository implements RepositoryInterface, ClientRepositoryInterface
 
         public function findById(int $id): ?Client
         {
-            try {
-                return $this->model->findOrFail($id);
-            } catch (ModelNotFoundException $e) {
-                return null;
+            if($this->model->find($id)){
+                return $this->model->find($id);
+            }else {
+                return abort(404);
             }
         }
 
@@ -62,7 +62,7 @@ class ClientRepository implements RepositoryInterface, ClientRepositoryInterface
                 $client = $this->findById($id);
                 return $client->update($data);
             }catch (\Throwable $e){
-                return null;
+                return redirect('errors.404');
             }
           
         }

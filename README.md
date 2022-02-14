@@ -24,7 +24,7 @@ or simply download the zipped file
 
 4.The next step is to install the tailwind via the composer:    
 
-    1.composer require laravel-frontend-presets / tailwindcss --dev 
+    1.composer require laravel-frontend-presets/tailwindcss --dev 
 
     2.php artisan ui tailwindcss --auth
      

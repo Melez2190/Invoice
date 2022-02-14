@@ -39,6 +39,11 @@ class ItemService
     {
         return $this->itemRepository->update($data, $id);
     }
+
+    public function restore($id) 
+    {
+        return $this->itemRepository->restore($id);
+    }
     public function softDelete($id)
     {
         return $this->itemRepository->softDelete($id);

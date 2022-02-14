@@ -8,4 +8,5 @@ interface ItemRepositoryInterface
     public function update($data, $id);
     public function softDelete($id);
     public function findTrashed($id);
+    public function restore($id);
 }

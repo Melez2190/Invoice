@@ -42,14 +42,9 @@ class ItemRepository implements RepositoryInterface, ItemRepositoryInterface
 
     public function findById($id)
     {
-      
-
-        try {
-             return $this->model->findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            return "greska";
-        }
+        return $this->model->find($id);
     }
+
     public function findTrashed($id)
     {
         return $this->model::onlyTrashed()->find($id);
@@ -69,7 +64,10 @@ class ItemRepository implements RepositoryInterface, ItemRepositoryInterface
     {
        return  $this->findById($id)->delete();
     }
-
+    public function restore($id)
+    {
+        return $this->model::withTrashed()->find($id)->restore();
+    }
     public function delete($id)
     {
         return $this->findTrashed($id)->forceDelete();
