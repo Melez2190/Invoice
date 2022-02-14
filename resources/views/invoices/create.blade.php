@@ -23,22 +23,18 @@
             
             <select name="client_id">
             @foreach ($clients as $client )
-
                 <option class="block shadow-5xl mb-10 p-2" value="{{ $client->id }}">{{ $client->name }}</option>
             @endforeach
                 
             </select>
            
-          
-         
-           
-            <input
+          <input
                 type="date"
                 class="block shadow-5xl mt-10 mb-10 p-2 w-80 italic placeholder-gray-400"
                 name="date_of_issue"
                  />
                  @if($errors->has('date_of_issue'))
-                    <p class="text-xs text-red-500">{{ $errors->first('date_of_issue') }}</div>
+                    <p class="text-xs text-red-500">{{ $errors->first('date_of_issue') }}</p>
                  @endif
             <input
                 type="date"
@@ -46,7 +42,7 @@
                 name="valuta"
                 />
                 @if($errors->has('valuta'))
-                    <p class="text-xs text-red-500">{{ $errors->first('valuta') }}</div>
+                    <p class="text-xs text-red-500">{{ $errors->first('valuta') }}</p>
                 @endif
            
             

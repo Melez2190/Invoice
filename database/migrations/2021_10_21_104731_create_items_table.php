@@ -21,7 +21,12 @@ class CreateItemsTable extends Migration
             $table->integer('quantity');
             $table->decimal('price');
             $table->integer('pdv')->default('18');
+            $table->foreignId('created_by')->nullable()->references('id')->on('users');
+            $table->foreignId('updated_by')->nullable()->references('id')->on('users'); 
+            $table->foreignId('deleted_by')->nullable()->references('id')->on('users');   
             $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 

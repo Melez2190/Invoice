@@ -57,9 +57,9 @@
                 <th class="border text-right">   
                     Total not paid
                 </th>
-                <th class="border text-right">
-                    Expired invoices
-                </th>
+                {{-- <th class="border text-right">
+                    Expired invoices --}}
+                {{-- </th> --}}
             </tr>
 
             
@@ -77,9 +77,9 @@
 
 
                </td>
-               <td>
-                   {{ $invoicesValuta }}
-               </td>
+               {{-- <td> --}}
+                   {{-- {{ $invoicesValuta }} --}}
+               {{-- </td> --}}
 
             </tr>
         </tbody>

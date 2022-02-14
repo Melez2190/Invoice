@@ -4,6 +4,17 @@
 
 <div class="ml-48">
    <div class="relative h-24">
+       {{-- @if () --}}
+        <form action="/invoices/archive/{{ $invoices->id }}" method="POST">
+            @csrf
+            
+        <input type="submit" class="bg-red-500 absolute cursor-pointer text-white shadow-5xl mb-10 p-2 w-48 uppercase font-bold"  value="View Deleted Items" name="soft">
+            
+      
+      
+           
+      
+    </form>
         <button class="bg-red-500 absolute right-4 text-white shadow-5xl mb-10 p-2 w-48 uppercase font-bold">
             <a href="/download-pdf/{{ $invoices->id }}">Download PDF</a>
         </button>
@@ -13,6 +24,11 @@
    </div>
 <div class="w-full h-0.5 bg-indigo-500"></div>
 <div class="flex justify-between p-4">
+    @if (session()->has('success'))
+    <div class="alert alert-success" >
+       {{ session()->get('success') }}
+    </div>
+@endif
     <div>
         <h6 class="font-bold">Date of issue : <span class="text-sm font-medium">{{ $invoices->date_of_issue}}</span></h6>
         <h6 class="font-bold">Valuta : <span class="text-sm font-medium">{{ $invoices->valuta }}</span></h6>
@@ -38,6 +54,7 @@
     </div>
     <div></div>
 </div>
+
 <div class="flex justify-center p-4">
     <div class="border-b w-full border-gray-200 shadow">
 
@@ -109,10 +126,11 @@
                       
                     </td>
                     <td class="px-6 py-4 text-red-500">
-                        <form action="/item/delete/{{ $item->id }}" method="POST">
+                        <form action="{{ route('item.delete', $item->id) }}" method="POST">
+                            
                             @csrf
-                                 
-                            <a href=""><input type="submit" class="bg-white" value="&rarr; Remove" ></a>
+                                 <input type="hidden" name="_method" value="DELETE">
+                            <a href=""><input type="submit" class="bg-white cursor-pointer" value="&rarr; Remove" ></a>
                           
                         </form>
                         

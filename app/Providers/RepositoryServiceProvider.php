@@ -5,16 +5,13 @@ namespace App\Providers;
 use App\Repositories\ClientRepository;
 use App\Repositories\Interfaces\ClientRepositoryInterface;
 use App\Repositories\Interfaces\InvoiceRepositoryInterface;
-use App\Repositories\Interfaces\InvoiceRepository;
-
+use App\Repositories\InvoiceRepository;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Blade;
 
-
-class AppServiceProvider extends ServiceProvider
+class RepositoryServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register services.
      *
      * @return void
      */
@@ -24,12 +21,13 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap services.
      *
      * @return void
      */
     public function boot()
     {
-        //
+        // $this->app->bind(ClientRepositoryInterface::class, ClientRepository::class);
+        // $this->app->bind(InvoiceRepositoryInterface::class, InvoiceRepository::class);
     }
 }

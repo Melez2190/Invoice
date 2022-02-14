@@ -23,7 +23,7 @@
                 name="name"
                 placeholder="Name" >
                 @if($errors->has('name'))
-                    <p class="text-xs text-red-500">{{ $errors->first('name') }}</div>
+                    <p class="text-xs text-red-500">{{ $errors->first('name') }}</p>
                 @endif
                
             <input
@@ -32,7 +32,7 @@
                 name="city"
                 placeholder="City" >
                 @if($errors->has('city'))
-                    <p class="text-xs text-red-500">{{ $errors->first('city') }}</div>
+                    <p class="text-xs text-red-500">{{ $errors->first('city') }}</p>
                 @endif
             <input
                 type="text"
@@ -40,7 +40,7 @@
                 name="address"
                 placeholder="Address" >
                 @if($errors->has('address'))
-                <p class="text-xs text-red-500">{{ $errors->first('address') }}</div>
+                <p class="text-xs text-red-500">{{ $errors->first('address') }}</p>
             @endif
             <input
                 type="text"
@@ -48,7 +48,7 @@
                 name="account_number"
                 placeholder="Account number" >
                 @if($errors->has('account_number'))
-                    <p class="text-xs text-red-500">{{ $errors->first('account_number') }}</div>
+                    <p class="text-xs text-red-500">{{ $errors->first('account_number') }}</p>
                 @endif
             <input
                 type="text"
@@ -56,7 +56,7 @@
                 name="id_number"
                 placeholder="Id number" >
                 @if($errors->has('id_number'))
-                    <p class="text-xs text-red-500">{{ $errors->first('id_number') }}</div>
+                    <p class="text-xs text-red-500">{{ $errors->first('id_number') }}</p>
                 @endif
             <input
                 type="integer"
@@ -64,7 +64,7 @@
                 name="tax_number"
                 placeholder="Tax number" >
                 @if($errors->has('tax_number'))
-                    <p class="text-xs text-red-500">{{ $errors->first('tax_number') }}</div>
+                    <p class="text-xs text-red-500">{{ $errors->first('tax_number') }}</p>
                 @endif
             <input
                 type="integer"
@@ -72,7 +72,7 @@
                 name="zip_code"
                 placeholder="Zip Code" >
                 @if($errors->has('zip_code'))
-                <p class="text-xs text-red-500">{{ $errors->first('zip_code') }}</div>
+                <p class="text-xs text-red-500">{{ $errors->first('zip_code') }}</p>
             @endif
                
             <input
@@ -81,7 +81,7 @@
                 name="email"
                 placeholder="Email" >
                 @if($errors->has('email'))
-                <p class="text-xs text-red-500">{{ $errors->first('email') }}</div>
+                <p class="text-xs text-red-500">{{ $errors->first('email') }}</p>
             @endif
             <input
                 type="integer"
@@ -89,7 +89,7 @@
                 name="phone_number"
                 placeholder="Phone number" >
                 @if($errors->has('phone_number'))
-                <p class="text-xs text-red-500">{{ $errors->first('phone_number') }}</div>
+                <p class="text-xs text-red-500">{{ $errors->first('phone_number') }}</p>
             @endif
 
             <button type="submit" class="bg-green-500 block text-white shadow-5xl mb-10 p-2 w-80 uppercase font-bold">

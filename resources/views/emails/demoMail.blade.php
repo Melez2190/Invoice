@@ -6,7 +6,7 @@
 <body>
  
  <h1>This is test mail from Quantox technology</h1>
- <p>Laravel 8 send email example</p>
+ <p>Please pay this invoice until {{ $invoices->valuta }}</p>
  
 </body>
 </html> 

@@ -65,6 +65,9 @@
                   
                     <p class="text-red-500">{{ number_format((float) $client->totalSum(), 2 ) }} rsd </p>
                 </td>
+                <td>
+                    <p class="text-green-500">{{ number_format((float) $client->totalnotPaid(), 2 ) }} rsd </p>
+                </td>
             </tr>
         </tbody>
   

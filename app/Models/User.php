@@ -47,11 +47,13 @@ class User extends Authenticatable
         return $this->hasMany(Client::class);
     }
     public function invoices() {
-       return $this->hasManyThrough(Invoice::class, Client::class);
-   }
+    return $this->hasManyThrough(Invoice::class, Client::class, 'user_id', 'updated_by', 'id');
+    }
 
 
-   public static function getUser() {
-    return Auth::user();
-}
+    public static function getUser() {
+        return Auth::user();
+    }
+
+    
 }

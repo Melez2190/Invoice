@@ -2,54 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Client;
-use App\Models\Item;
 use App\Http\Requests\ClientStoreRequest;
-use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\InvoiceStoreRequest;
-
-use App\Models\User;
-use Illuminate\Validation\Rules\In;
-use Barryvdh\DomPDF\PDF as PDF;
-use Illuminate\Support\Facades\Redirect;
-
-
+use App\Services\ClientService;
+use App\Models\Invoice;
 
 class ClientsController extends Controller
 {
+    private $clientService;
+
+    public function __construct(ClientService $clientService)
+    {
+        $this->clientService = $clientService;
+    }
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
+
+
     public function index()
     {
-        $data = Client::where('user_id', '=', auth()->user()->id);
-
-        $clients = $data->filter(request([
-            'client_name',
-            'city',
-            'email',
-            'tax_number',
-            'id_number'
-        ]))->orderBy('name')->paginate(10);
-    
-         return view('clients.index', [
-            'clients' => $clients->withQueryString()
+        return view('clients.index' , [
+            'clients' => $this->clientService->all()->withQueryString()
         ]);
+      
+        
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function create()
     {
-        
-        
         return view('clients.create');
     }
 
@@ -61,16 +49,15 @@ class ClientsController extends Controller
      */
     public function store(ClientStoreRequest $request)
     {
-        $validated = $request->validated();
-        // dd(auth()->user()->id);
         $userId = auth()->user()->id;
         $validated = $request->validated();
         $validated['user_id'] = $userId;
-        Client::create($validated);
-       
-        
+
+        $this->clientService->store($validated);
+
         return redirect('/clients');
     }
+    
 
     /**
      * Display the specified resource.
@@ -80,22 +67,17 @@ class ClientsController extends Controller
      */
     public function show($id)
     {
-        $client = Client::find($id);
-
-        $data = Item::whereRelation('invoices', 'status', '=', false)->whereRelation('invoices', 'client_id', '=', $id)->get();
-        
+        $client = $this->clientService->findById($id);
         $invoices = Invoice::where('client_id', '=', $id)->where('status', '=', false)->with('items')->get('id');
         
-
         if(auth()->user()->id === $client->user_id){
-        return view('clients.show', [
-            'client' => $client,
-            'data' => $data,
-            'invoices' => $invoices
-        ]);
-    }else {
-        return redirect('/clients');
-    }
+            return view('clients.show', [
+                'client' =>  $this->clientService->findById($id),
+                'invoices' => $invoices
+            ]);
+        }else {
+            return redirect('/clients');
+        }
     }
 
     /**
@@ -106,9 +88,7 @@ class ClientsController extends Controller
      */
     public function edit($id)
     {
-        $client = Client::find($id);
-
-        return view('clients.edit')->with('clients', $client);
+        return view('clients.edit')->with('clients', $this->clientService->findById($id));
     }
 
     /**
@@ -118,21 +98,12 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ClientStoreRequest $request, $id)
     {
-        Client::where('id', $id)->update([
-            'user_id' => auth()->user()->id,
-            'name'      => $request->input('name'),
-            'city'      => $request->input('city'),
-            'address'   => $request->input('address'),
-            'zip_code'  => $request->input('account_number'),
-            'zip_code'  => $request->input('id_number'),
-            'tax_number'  => $request->input('tax_number'),
-            'zip_code'  => $request->input('zip_code'),
-            'email'     => $request->input('email'),
-            'phone_number'=> $request->input('phone_number')
-            
-        ]);
+        $data = $request->validated();
+        if (Auth::user()->id === $this->clientService->findById($id)->user_id) {
+            $this->clientService->update($data, $id);
+        }
         return redirect('/clients');
     }
 
@@ -144,7 +115,7 @@ class ClientsController extends Controller
      */
     public function destroy($id)
     {
-         Client::find($id)->delete();
-         return redirect("/clients");  
+         $this->clientService->delete($id);
+         return redirect("/clients");
     }
 }

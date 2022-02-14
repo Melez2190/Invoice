@@ -199,7 +199,14 @@ Status: @if($invoices->status )
         </tfoot>
     </table>
 </div>
-<div class="valute">Please pay until: <strong>{{ $invoices->valuta }} </strong></div>
+
+@if ($invoices->status)
+    <div class="valute">Thanks for paying: <strong>{{ number_format((float) $invoices->total(), 2 ) }} </strong></div>
+    
+    @else 
+    <div class="valute">Please pay until: <strong>{{ $invoices->valuta }} </strong></div>
+
+@endif
 <div class="information" style="position: absolute; bottom: 0;">
     <table width="100%">
         <tr>

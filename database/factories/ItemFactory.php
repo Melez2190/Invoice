@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Invoice;
 use App\Models\Item;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ItemFactory extends Factory
@@ -22,12 +23,9 @@ class ItemFactory extends Factory
      */
     public function definition()
     {
-        $ids = Invoice::all()->pluck('id');
-        foreach ($ids as $id) {
-            $invoices[] = $id;
-        }
-        return [
-            'invoice_id' => array_rand(array_flip($invoices)),
+        $ids = Invoice::all()->pluck('id')->toArray();
+         return [
+            'invoice_id' => array_rand(array_flip($ids)),
             'description' => $this->faker->jobTitle(),
             'price'=> $this->faker->randomFloat(2, 20, 999999),
             'quantity' => rand(1, 150),

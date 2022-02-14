@@ -3,7 +3,6 @@
 @section('content')
 
 <div class="ml-48">
-
   <table class="mb-12 w-full">
         
     <form class="mb-8" action="/clients/search" method="GET">
@@ -94,8 +93,8 @@
             <td><div class="dropdown">
                 <button class="dropbtn">Actions</button>
                 <div class="dropdown-content">
-                <a href="clients/{{ $client->id }}/edit">Edit</a>
-                <a href="clients/{{ $client->id }}">View</a>
+                <a href="/clients/{{ $client->id }}/edit">Edit</a>
+                <a href="/clients/{{ $client->id }}">View</a>
                 <form action="/clients/delete/{{ $client->id }}" method="POST">
                   @csrf
                  

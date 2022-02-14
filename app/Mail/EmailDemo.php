@@ -32,6 +32,7 @@ class EmailDemo extends Mailable
      */
     public function build()
     {
+
         view()->share(['invoices' => $this->invoice, 'items'=>$this->invoice->items,  'user'=>$this->invoice->client]);
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('pdf.show');

@@ -22,12 +22,12 @@ class ClientFactory extends Factory
      */
     public function definition()
     {
-        $ids = User::all()->pluck('id');
-        foreach ($ids as $id) {
-            $usersIds[] = $id;
-        }
+        $admin = User::first();
+        $user = User::all()->pluck('id')->first();
+       
+// dd($usersIds);
         return [
-            'user_id' => array_rand(array_flip($usersIds)),
+            'user_id' => $user,
             'name' => $this->faker->Company(),
             'city' => $this->faker->city(),
             'address' => $this->faker->streetAddress(),
@@ -36,7 +36,8 @@ class ClientFactory extends Factory
             'tax_number' => rand(100203, 999999),
             'zip_code' => rand(11000, 17000),
             'email' => $this->faker->safeEmail(),
-            'phone_number' => rand(60000, 6000000)
+            'phone_number' => rand(60000, 6000000),
+            
 
         ];
     }

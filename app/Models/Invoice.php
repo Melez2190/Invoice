@@ -4,29 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Client;
 
 class Invoice extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+    
     protected $table = 'invoices';
     protected $primaryKey = 'id';
-    protected $fillable = ['client_id', 'date_of_issue', 'valuta'];
+    protected $fillable = ['client_id', 'date_of_issue', 'valuta', 'created_by', 'updated_by'];
+    protected $dates = ['deleted_at'];
+
     
     public function client() {
         return $this->belongsTo(Client::class, 'client_id');
     }
+    
+  
     public function user() {
         return $this->client->user;
     }
-    public function userOwner(){
-        return $this->hasOneThrough(
-            User::class,
-            Client::class,
-           
-        );
-    }
+    // public function user(){
+    //     return $this->
+    // }
 
     public function items() {
         return $this->hasMany(Item::class);
@@ -56,13 +57,19 @@ class Invoice extends Model
             $query
                 ->where('valuta', '<=', $tovaluta ));
 
+        // $query->when($filters['status'] ?? false, fn($query, $status)=>
+        //     $query
+        //         ->where('status', '=', $status ));
+
         $query->when($filters['status_true'] ?? false, fn ($query, $status_true)=>
             $query
                 ->where('status', '=', $status_true ));
 
-        $query->when($filters['status_0'] ?? false, fn($query, $status_0)=>
-            $query
-                ->where('status', '=', $status_0));
+        if(isset($filters['status'])){
+            $query->where('status', request('status'));
+        }
+
+        
 
       
     }

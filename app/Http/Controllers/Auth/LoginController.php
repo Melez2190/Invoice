@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -28,6 +29,15 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+
+    public function devLogin() 
+    {
+        abort_unless(app()->environment('local'), 404);
+
+        auth()->login(User::first());
+
+        return redirect()->to(RouteServiceProvider::HOME);
+    }
     /**
      * Create a new controller instance.
      *

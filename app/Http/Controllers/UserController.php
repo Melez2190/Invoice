@@ -57,6 +57,7 @@ class UserController extends Controller
         }
        
        
+       
         return view('user.statistics', [
             'user' => $user,
             'paid' => $totalincome,

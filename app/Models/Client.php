@@ -4,21 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+    
     protected $table = 'clients';
     protected $primaryKey = 'id';
     protected $fillable = ['user_id', 'name', 'city', 'address', 'account_number', 'id_number', 'zip_code', 'tax_number', 'email', 'phone_number'];
+    protected $dates = ['deleted_at'];
+
 
 
     public function invoices() {
         return $this->hasMany(Invoice::class);
     }
     public function user() {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, ['user_id', 'updated_by']);
     }
+    
 
     public function items() {
         return $this->hasManyThrough(Item::class, Invoice::class);
@@ -26,6 +32,7 @@ class Client extends Model
   
     public function scopeFilter($query, array $filters)
     {
+       
        
         $query->when($filters['client_name'] ?? false, fn ($query, $client_name)=>
             $query
@@ -58,6 +65,21 @@ class Client extends Model
 
         foreach($invoices as $invoice){
             if($invoice->status === 0 ){
+                foreach ($invoice->items as $one){
+                    $total += (($one->quantity * $one->price) + (($one->quantity * $one->price)/100 * $one->pdv));
+        
+                }
+            }
+        }
+        return $total;
+    }
+    public function totalnotPaid(){
+        $invoices = $this->invoices;
+        $invoices->load('items');
+        $total = 0;
+
+        foreach($invoices as $invoice){
+            if($invoice->status === 1 ){
                 foreach ($invoice->items as $one){
                     $total += (($one->quantity * $one->price) + (($one->quantity * $one->price)/100 * $one->pdv));
         

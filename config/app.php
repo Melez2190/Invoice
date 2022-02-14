@@ -164,7 +164,10 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-
+        \App\Providers\ObserverServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
+            
+        
         /*
          * Package Service Providers...
          */

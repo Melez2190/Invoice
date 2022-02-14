@@ -5,7 +5,7 @@
 <div class="m-auto w-4/8 py-8" >
     <div class="text-center">
         <h2 class="text-3xl uppercase bold">
-            Add new client
+            Edit client
         </h2>
 
     </div>

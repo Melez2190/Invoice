@@ -4,12 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ItemStoreRequest;
 use Illuminate\Http\Request;
+use App\Services\ItemService;
 use App\Models\Item;
 
 
 
 class ItemsController extends Controller
 {
+
+    private $itemService;
+
+    public function __construct(ItemService $itemService)
+    {
+        $this->itemService = $itemService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,10 +25,8 @@ class ItemsController extends Controller
      */
     public function index()
     {
-        $items = Item::whereRelation('invoice_id', '=', 'id')->get();
-
         return view('invoices.show', [
-            'items' => $items
+            'items' => $this->itemService->all()
          ]);
     }
 
@@ -43,8 +49,8 @@ class ItemsController extends Controller
     public function store(ItemStoreRequest $request)
     {
         $validate = $request->validated();
-       
-        $item = Item::create($validate);
+        $item = $this->itemService->store($validate);
+
         return redirect("/invoices/$item->invoice_id");
     }
 
@@ -84,23 +90,38 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update( ItemStoreRequest $request, $id)
     {
-        $items = Item::where('id', '=', $id)->first()->invoice_id;
-       
-        $item = Item::where('id', $id)->update([
-            'invoice_id' => $request->input('invoice_id'),
-           'description'      => $request->input('description'),
-           'quantity'      => $request->input('quantity'),
-           'price'   => $request->input('price'),
-           'pdv'  => $request->input('pdv')
-          
-           
-       ]);
-       return redirect("/invoices/$items");
+        $invoice = $this->itemService->findRelationWithInvoice($id);
+        
+        $validated = $request->validated();
+         $this->itemService->update($validated, $id);
+        return redirect("/invoices/$invoice");
+    }
 
 
-   }
+    /**Trashed out the view, storage in deleted_at.
+     *  Can restore.
+     * Soft Deleted
+     * 
+     */
+
+    public function delete($id)
+    {
+        $this->itemService->softDelete($id);
+        
+        return back();
+    }
+
+    public function restore($id)
+    {
+        Item::withTrashed()->find($id)->restore();
+        $invoice = Item::where('id', $id)->first()->invoice_id;
+
+
+        return redirect("invoices/$invoice");
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -108,13 +129,10 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, Item $item)
+    public function destroy($id)
     {
-        $items = Item::where('id', '=', $id)->first();
-       
-        Item::find($id)->delete();
-        
-        return redirect("/invoices/$items->invoice_id");
+        $this->itemService->delete($id);
+        return back();
            
     }
 }

@@ -50,7 +50,7 @@
               <button type="submit" class="bg-green-500 text-white shadow-5xl ml-2 mb-2 p-2 w-24 uppercase font-bold" name="status_true" value="1"> PAID </button>
             </td>
             <td>
-              <button type="submit" class="bg-red-500 ml-2 mr-2 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold" name="status_0" value="0"> NOT PAID </button>
+              <button type="submit" class="bg-red-500 ml-2 mr-2 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold" name="status" value="{{ 0 }}"> NOT PAID </button>
             </td>
             <td>
               <button type="submit" class="bg-blue-900 text-white shadow-5xl mb-2 p-2 w-24 uppercase font-bold">
@@ -80,13 +80,14 @@
               
             </tr>
         </thead>
-        
 @foreach ($invoices as $invoice)
+
 
         <tr>
           
           
-            <td class=" text-left m-2 border-separate border-b-2"><a href="/clients/{{ $invoice->client->id }}" > {{ $invoice->client->name }} </a></td>
+            <td class=" text-left m-2 border-separate border-b-2"><a href="/clients/{{ $invoice->client->id }}" >
+               {{ $invoice->client->name }} </a></td>
                 
             
         
