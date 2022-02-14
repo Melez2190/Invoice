@@ -14,7 +14,7 @@ Follow the steps below to install this project on your local computer
 
 1.First clone with the command :    
 
-  git clone https://github.com/Melez2190/Invoice.git    
+    git clone https://github.com/Melez2190/Invoice.git  
    
 or simply download the zipped file
 
