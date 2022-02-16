@@ -41,7 +41,5 @@ class EmailDemo extends Mailable
                 ->view('emails.demoMail');
        
     }
-    // return $this->markdown('Email.demoEmail')
-    // ->with('mailData', $this->mailData);
-    // $invoice= Invoice::pdf($this->invoice->id);
+   
 }

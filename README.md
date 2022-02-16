@@ -22,15 +22,8 @@ or simply download the zipped file
 
 3.Then in the .env file in DB_DATABASE change the database name to your "database_name"
 
-4.The next step is to install the tailwind via the composer:    
-
-    1.composer require laravel-frontend-presets/tailwindcss --dev 
-
-    2.php artisan ui tailwindcss --auth
-     
-    3.npm install && npm run dev
-     
-
+4.The next step is to command:   
+    composer install
 
 5.php artisan serve 
 

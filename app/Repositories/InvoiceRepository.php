@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Events\InvoiceCreated;
 use App\Models\Invoice;
+use App\Models\Client;
 use App\Repositories\Interfaces\InvoiceRepositoryInterface;
 use App\Repositories\Interfaces\RepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -51,7 +53,14 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
     }
     public function store(array $data)
     {
-        return $this->model->create($data);
+
+        $invoice =  $this->model->create($data);
+        $client = Client::where('id', '=', $invoice->client_id)->get();
+        // dd($client);
+        event(new InvoiceCreated($invoice));
+
+        return $invoice;
+
        
     }
     public function updatestatus($request, $id)

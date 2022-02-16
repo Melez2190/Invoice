@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InvoiceCreated;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Client;
@@ -38,7 +39,6 @@ class InvoicesController extends Controller
     public function create(Invoice $invoice)
     {
         $clients = Client::where('user_id', '=', auth()->user()->id)->get();
-        
          return view('invoices.create', [
                 'clients'  => $clients
             ]);
@@ -54,8 +54,8 @@ class InvoicesController extends Controller
      */
     public function store(InvoiceStoreRequest $request)
     {      
-         $validate = $request->validated();
-        $this->invoiceService->store($validate);
+        $validate = $request->validated();
+         $this->invoiceService->store($validate);
         return redirect("/invoices");
     }
 
@@ -69,7 +69,7 @@ class InvoicesController extends Controller
     {
         $items = Item::where('invoice_id', '=', $id)->get();
 
-       if(auth()->user()->id === $this->invoiceService->findbyId($id)->client->user_id){
+        if(auth()->user()->id === $this->invoiceService->findbyId($id)->client->user_id){
             return view('invoices.show', [
                 'invoices' => $this->invoiceService->findbyId($id),
                 'items' => $items,
