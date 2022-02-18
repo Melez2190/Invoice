@@ -50,7 +50,7 @@ class ItemsController extends Controller
         $validate = $request->validated();
         $item = $this->itemService->store($validate);
 
-        return redirect("/invoices/$item->invoice_id");
+        return redirect("/invoices/$item->invoice_id")->with('success', 'Item added Successful');
     }
 
     /**

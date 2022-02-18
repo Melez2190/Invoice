@@ -9,10 +9,11 @@ use App\Models\Client;
 use App\Models\Item;
 use App\Services\InvoiceService;
 use App\Http\Requests\InvoiceStoreRequest;
-
+use Illuminate\Notifications\Notifiable;
 
 class InvoicesController extends Controller
 {
+    use Notifiable;
     private $invoiceService;
 
     public function __construct(InvoiceService $invoiceService)

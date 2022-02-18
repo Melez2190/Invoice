@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\InvoiceCreated;
 use App\Models\Invoice;
 
 use App\Repositories\InvoiceRepository;
@@ -24,7 +25,10 @@ class InvoiceService
 
     public function store(array $data)
     {
-        return $this->invoiceRepository->store($data);
+        $invoice = $this->invoiceRepository->store($data);
+        event(new InvoiceCreated($invoice));
+        return $invoice;
+
     }
 
     public function findById(int $id) 

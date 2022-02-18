@@ -53,15 +53,8 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
     }
     public function store(array $data)
     {
-
         $invoice =  $this->model->create($data);
-        $client = Client::where('id', '=', $invoice->client_id)->get();
-        // dd($client);
-        event(new InvoiceCreated($invoice));
-
         return $invoice;
-
-       
     }
     public function updatestatus($request, $id)
     { 

@@ -10,11 +10,12 @@
     <title>{{ config('app.name', 'Quantox invoice') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="/js/app.js" defer></script>
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     
     <!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    {{-- <link href="{{ mix('css/app.css') }}" rel="stylesheet"> --}}
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body class="bg-gray-100 h-screen antialiased leading-none font-sans">
     <div id="app">
@@ -57,6 +58,8 @@
        </div>
        
        <!--Sidebar-->
+      @auth
+          
        <div class="w-full md:w-44 mt-8 bg-gray-900 md:bg-gray-900 px-2 text-center fixed bottom-0  md:pt-8 md:top-8 md:left-0 h-16 md:h-screen md:border-r-4 md:border-gray-600">
           <div class="md:relative mx-auto lg:float-left lg:px-0">
              <ul class="list-reset flex flex-row md:flex-col text-center md:text-left">
@@ -88,6 +91,8 @@
              </ul>
           </div>
        </div>
+      @endauth
+
     </div>
 </main>
 

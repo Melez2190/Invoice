@@ -6,9 +6,11 @@ use App\Http\Requests\ClientStoreRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ClientService;
 use App\Models\Invoice;
+use Illuminate\Notifications\Notifiable;
 
 class ClientsController extends Controller
 {
+    use Notifiable;
     private $clientService;
 
     public function __construct(ClientService $clientService)

@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\InvoiceCreated;
+use App\Jobs\SendEMailNotificationInvoice;
 use App\Models\Client;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Mail;
@@ -30,14 +31,6 @@ class SendNotificationEmail
     public function handle(InvoiceCreated $event)
     {
         $invoice = $event->invoice;
-        // dd($invoice);
-
-        $client = Client::where('id', '=', $invoice->client_id)->first();
-        // dd($client);
-        Mail::send('emails.notification', ['client' => $client, 'invoice' => $invoice], function ($message) use ($client) {
-                $message->from('milosmelez2190@gmail.com', 'Milos ');
-                $message->subject('Welcome aboard '.$client->name.'!');
-                $message->to($client->email);
-        });
+        dispatch(new SendEmailNotificationInvoice($invoice));
     }
 }
