@@ -6,6 +6,7 @@ use App\Http\Requests\ClientStoreRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ClientService;
 use App\Models\Invoice;
+use Clockwork\Request\Request;
 use Illuminate\Notifications\Notifiable;
 
 class ClientsController extends Controller
@@ -49,8 +50,9 @@ class ClientsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ClientStoreRequest $request)
+    public function store(Request $request)
     {
+        dd(1);
         $userId = auth()->user()->id;
         $validated = $request->validated();
         $validated['user_id'] = $userId;
