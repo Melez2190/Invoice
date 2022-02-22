@@ -37,7 +37,7 @@ trait WithTestUser
     {
         
         $user = User::factory()->create();
-        dd($user);
+        
         $this->actingAs($user);
 
         return $user;

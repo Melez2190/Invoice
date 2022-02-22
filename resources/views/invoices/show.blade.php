@@ -126,26 +126,21 @@
                       
                     </td>
                     <td class="px-6 py-4 text-red-500">
-                        <form action="{{ route('item.delete', $item->id) }}" method="POST">
+                        <form action="{{ route('item.delete', [$item->id]) }}" method="POST">
                             
                             @csrf
-                                 <input type="hidden" name="_method" value="DELETE">
+                            @method('DELETE')
+                                 {{-- <input type="hidden" name="_method" value="DELETE"> --}}
                             <a href=""><input type="submit" class="bg-white cursor-pointer" value="&rarr; Remove" ></a>
                           
                         </form>
                         
                     </td>
-                    {{-- <td>
-                        @if($invoices->status )
-                        <span class="text-green-700">Paid</span>
-                    @else
-                        <span class="text-red-700">Not paid</span>
-                    </td>
-                    @endif --}}
+                 
                     <td class="text-l text-blue-900">
                        
                        
-                        <a href="/items/{{ $item->id }}/edit" >&rarr; Edit</a>
+                        <a href="{{ route('items.edit', [$item->id]) }}" >&rarr; Edit</a>
                         
                         {{-- <a href="/invoices/{{ $invoices->id }}/edit">Change status</a> --}}
                         
@@ -191,7 +186,7 @@
 
 <div class="flex justify-center p-4">
     <div class="border-b border-gray-200 shadow">
-        <form action="/items/store" method="POST">
+        <form action="{{ route('items.store') }}" method="POST">
             @csrf
             
         <table class="">

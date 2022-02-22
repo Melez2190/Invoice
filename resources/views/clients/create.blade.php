@@ -13,7 +13,7 @@
 </div>
 <div class="flex justify-center pt-2" >
 
-    <form action="/clients/store" method="POST">
+    <form action={{ route('clients.store') }} method="POST">
         @csrf
         <div class="block">
             

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Concerns\WithTestUser;
 use Tests\TestCase;
 
-class UserTest extends TestCase
+class ClientTest extends TestCase
 {
     use RefreshDatabase, WithTestUser;
    
@@ -20,12 +20,11 @@ class UserTest extends TestCase
     {
         parent::setUp();
     }
+
     protected function validData()
     {
-        $user = User::factory()->create();
-
         $data = [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'name' => 'test name',
             'city' => 'test name',
             'address' => 'test name',
@@ -38,20 +37,50 @@ class UserTest extends TestCase
         ];
         return $data;
     }
+
     public function test_create_client()
     {
-        // $user = User::factory()->create();
-       
-        //  Client::create($this->validData());
-       dd($this->user);
-        $response = $this->json('POST', '/clients/store', $this->validData());
-        // $this->json('POST', '/cities', $data);
+        $this->bootWithTestUser();
+   
+         $response = $this->json('POST', '/clients', $this->validData());
+        
         $response->assertRedirect();
+
         $this->assertDatabaseHas('clients', [
-            'name' => 'test name'
+            'created_by' => $this->user->id,
         ]);
 
     }
 
+    public function test_update_client()
+    {
+        $this->bootWithTestUser();
+        $client = Client::factory()->create();
+
+        $data = $this->validData();
+        
+        $response = $this->json('PUT', "/clients/{$client->id}", $data);
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('clients', [
+            'updated_by' => $this->user->id,
+        ]);
+    }
+
+    public function test_delete_client()
+    {
+        $this->bootWithTestUser();
+
+       
+        $client = Client::factory()->create();
+    
+        $response = $this->json('DELETE', "/clients/{$client->id}");
+
+   
+        $response->assertRedirect();
+       
+        $this->assertSoftDeleted('clients', ['id' => $client->id]);
+    }
+ 
     
 }

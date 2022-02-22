@@ -6,10 +6,9 @@
     <table class="w-full table-fixed border-separate  border border-solid border-black-800 my-4">
         
 
-
-        <form action="/invoices/update/{{ $invoice->id }}" method="POST">
+        <form action="{{ route('invoices.update', [$invoice->id]) }}" method="POST">
             @csrf
-           
+           @method('PUT')
             <div class="block">
                 <input
                 type="text"

@@ -14,7 +14,7 @@
 
 <div class="flex justify-center pt-2" >
 
-    <form action="/invoices/store" method="POST">
+    <form action="{{ route('invoices.store') }}" method="POST">
         
         @csrf
         

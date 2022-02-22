@@ -35,13 +35,10 @@ class InvoiceService
     {
         return $this->invoiceRepository->findById($id);
     }
-    public function updatestatus($data, $id) 
+   
+    public function update($data, $id)
     {
-        return $this->invoiceRepository->updatestatus($data, $id);
-    }
-    public function updaterest($data, $id)
-    {
-        return $this->invoiceRepository->updaterest($data, $id);
+        return $this->invoiceRepository->update($data, $id);
 
     }
     public function delete($id)

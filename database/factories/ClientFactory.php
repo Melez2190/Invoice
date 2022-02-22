@@ -37,6 +37,7 @@ class ClientFactory extends Factory
             'zip_code' => rand(11000, 17000),
             'email' => $this->faker->safeEmail(),
             'phone_number' => rand(60000, 6000000),
+            'created_by' => $user,
             
 
         ];

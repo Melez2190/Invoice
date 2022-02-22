@@ -6,9 +6,9 @@
 <div class="flex justify-center p-4">
     <div class="border-b border-gray-200 shadow">
        
-        <form action="/items/update/{{ $item->id }}" method="POST">
+        <form action="{{ route('items.update', [$item->id]) }}" method="POST">
             @csrf
-            
+            @method('PATCH')
             
         <table class="">
             <thead class="bg-gray-50">

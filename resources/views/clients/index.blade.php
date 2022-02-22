@@ -5,7 +5,7 @@
 <div class="ml-48">
   <table class="mb-12 w-full">
         
-    <form class="mb-8" action="/clients/search" method="GET">
+    <form class="mb-8" action="{{ route('clients.index') }}" method="GET">
       <thead class="mb-6">
        <tr class=" mb-8">
          <th class="text-left">
@@ -95,12 +95,12 @@
                 <div class="dropdown-content">
                 <a href="/clients/{{ $client->id }}/edit">Edit</a>
                 <a href="/clients/{{ $client->id }}">View</a>
-                <form action="/clients/delete/{{ $client->id }}" method="POST">
-                  @csrf
-                 
-                  <a href=""><input type="submit" value="Delete" ></a>
+                  <form action="{{ route('clients.destroy', [$client->id]) }}" method="POST">
+                      @csrf
+                      @method('DELETE')
+                      <a href=""><input type="submit" value="Delete" ></a>
                 
-              </form>
+                  </form>
                 </div>
               </div>
               

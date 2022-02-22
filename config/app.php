@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Quantox invoice'),
+    'name' => env('APP_NAME', 'Invoice'),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'name_app' => env('APP_NAME', 'Quantoxinvoice'),
+    'name_app' => env('APP_NAME', 'Invoice'),
 
     'asset_url' => env('ASSET_URL', null),
 

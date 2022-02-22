@@ -50,9 +50,8 @@ class ClientsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClientStoreRequest $request)
     {
-        dd(1);
         $userId = auth()->user()->id;
         $validated = $request->validated();
         $validated['user_id'] = $userId;

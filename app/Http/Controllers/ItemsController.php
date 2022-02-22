@@ -133,6 +133,7 @@ class ItemsController extends Controller
      */
     public function destroy($id)
     {
+      
         $this->itemService->delete($id);
         return back();
            

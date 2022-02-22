@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->create();
         
 
         Client::factory(5)->create();

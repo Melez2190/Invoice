@@ -21,8 +21,7 @@ class CreateInvoicesTable extends Migration
             $table->date('date_of_issue');
             $table->date('valuta');
             $table->foreignId('created_by')->nullable()->references('id')->on('users');
-            $table->foreignId('updated_by')->nullable()->references('id')->on('users'); 
-            $table->foreignId('deleted_by')->nullable()->references('id')->on('users');   
+            $table->foreignId('updated_by')->nullable()->references('id')->on('users');   
             $table->timestamps();
             $table->softDeletes();
 

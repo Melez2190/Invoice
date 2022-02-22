@@ -83,7 +83,7 @@
                         
                     </td>
                     <td>
-                    <form action="{{ route('item.destroy', $item->id) }}" method="POST">
+                    <form action="{{ route('items.destroy', $item->id) }}" method="POST">
                             
                         @csrf
                         @method('DELETE')

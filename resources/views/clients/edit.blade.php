@@ -12,11 +12,11 @@
 </div>
 
 <div class="flex justify-center pt-2" >
-
-    <form action="/clients/update/{{ $clients->id }}" method="POST">
+    {{-- public function route($name, $parameters = [], $absolute = true) --}}
+    <form action="{{ route("clients.update", [$clients->id])}}" method="POST">
         
         @csrf
-       
+       @method('PUT')
         <div class="block">
             <input
             type="text"

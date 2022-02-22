@@ -26,6 +26,7 @@ class InvoiceFactory extends Factory
     public function definition()
     {
         $clients = Client::all()->pluck('id')->toArray();
+        $user = User::all()->pluck('id')->first();
        
 
         foreach(range(1, 120) as $index)
@@ -45,6 +46,8 @@ class InvoiceFactory extends Factory
                 'date_of_issue' => Carbon::create($year,$month ,$day , 0, 0, 0),
                 'valuta'  => $date->addWeeks(rand(1, 260)),
                 'status' => 0,
+                'created_by' => $user,
+
             ];
         }
 

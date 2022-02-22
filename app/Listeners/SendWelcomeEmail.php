@@ -28,11 +28,11 @@ class SendWelcomeEmail
     public function handle(UserCreated $event)
     {
         $user = $event->user;
-       
         Mail::send('emails.welcome', ['user' => $user], function ($message) use ($user) {
                 $message->from('hi@yourdomain.com', 'Milos ');
                 $message->subject('Welcome aboard '.$user->name.'!');
                 $message->to($user->email);
         });
+        
     }
 }

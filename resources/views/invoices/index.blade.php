@@ -7,7 +7,7 @@
    
        <table class="mb-12 w-full">
         
-      <form class="mb-8" action="/invoices/search" method="GET">
+      <form class="mb-8" action="{{ route('invoices.index') }}" method="GET">
         <thead class="mb-6">
          <tr class=" mb-8">
            <th class="text-left">
@@ -109,10 +109,10 @@
             <a href="/invoices/{{ $invoice->id }}/edit">Edit</a>
             <a href="/invoices/{{ $invoice->id }}">View</a>
             <a href="/invoices/{{ $invoice->id }}/edit">
-              <form action="/invoices/update/{{ $invoice->id }}" method="POST" >
+              <form action="{{ route('invoices.update', [$invoice->id]) }}" method="POST" >
                
                 @csrf
-               
+                @method('PATCH')
             <input name="status" type="hidden" value="@if ($invoice->status === 1)
                 0 
                 @else
@@ -123,9 +123,9 @@
             </button> 
 
           </form></a>
-          <form action="/invoice/delete/{{ $invoice->id }}" method="POST">
+          <form action="{{ route('invoices.destroy', [$invoice->id]) }}" method="POST">
             @csrf
-                 
+            @method('DELETE')   
             <a href=""><input type="submit" value="Delete" ></a>
           
         </form>

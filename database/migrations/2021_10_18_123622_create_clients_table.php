@@ -28,7 +28,7 @@ class CreateClientsTable extends Migration
             $table->biginteger('phone_number')->nullable();
             $table->foreignId('created_by')->nullable()->references('id')->on('users');
             $table->foreignId('updated_by')->nullable()->references('id')->on('users');   
-            $table->foreignId('deleted_by')->nullable()->references('id')->on('users');
+            // $table->foreignId('deleted_by')->nullable()->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
 
