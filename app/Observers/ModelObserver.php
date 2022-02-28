@@ -18,6 +18,7 @@ class ModelObserver
     { 
         if(auth()->user()){
             $model->created_by = auth()->user()->id;
+            $model->updated_by = auth()->user()->id;
          }
     }
 

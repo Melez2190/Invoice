@@ -14,7 +14,9 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "mpdf/mpdf": "^8.0",
-        "symfony/psr-http-message-bridge": "^2.1"
+        "symfony/psr-http-message-bridge": "^2.1",
+        "tightenco/ziggy": "^1.4",
+        "yajra/laravel-datatables-oracle": "^9.19"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

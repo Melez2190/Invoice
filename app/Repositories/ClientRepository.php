@@ -30,17 +30,17 @@ class ClientRepository implements RepositoryInterface, ClientRepositoryInterface
         }
         public function all()
         {
-           
-             return $this->findByRelation()->filter(request([
-                    'client_name',
-                    'city',
-                    'email',
-                    'tax_number',
-                    'id_number'
-                ]))->orderBy('name')
-                ->paginate(10);
+           return $this->findByRelation()->get();
+        //      return $this->findByRelation()->filter(request([
+        //             'client_name',
+        //             'city',
+        //             'email',
+        //             'tax_number',
+        //             'id_number'
+        //         ]))->orderBy('name')
+        //         ->paginate(10);
+        // }
         }
-
         public function findById(int $id): ?Client
         {
             if($this->model->find($id)){

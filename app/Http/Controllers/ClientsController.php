@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientStoreRequest;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ClientService;
 use App\Models\Invoice;
-use Clockwork\Request\Request;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\DataTables;
 
 class ClientsController extends Controller
 {
@@ -25,10 +28,24 @@ class ClientsController extends Controller
      */
 
 
-    public function index()
+    public function index(Request $request)
     {
+     
+      if($request->ajax()){
+        $clients = $this->clientService->all();
+        return Datatables::of($clients)
+            ->addIndexColumn()
+            ->addColumn('action', function($row){
+                $html = '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Edit" class="btn-edit bg-blue-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Edit</a> ';
+                $html .= '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Delete" class="btn-delete bg-red-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Delete</a> ';
+                // $actionBtn = '<a href="javascript:void(0)" data-id="'.$row->id.'"  data-bs-toggle="modal" data-bs-target="#editModal" class="edit  bg-blue-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold  btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete  bg-red-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold btn btn-danger btn-sm">Delete</a>';
+                return $html;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+      }
         return view('clients.index' , [
-            'clients' => $this->clientService->all()->withQueryString()
+            'clients' => $this->clientService->all()
         ]);
       
         
@@ -50,15 +67,34 @@ class ClientsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ClientStoreRequest $request)
+    public function store(Request $request)
     {
+        // dd($request);
+        // dd($request->client_id);
         $userId = auth()->user()->id;
-        $validated = $request->validated();
-        $validated['user_id'] = $userId;
+        Client::updateOrCreate(['id' => $request->client_id],
+            [
+            'user_id' => $userId,
+            'name' => $request->name,
+            'city' => $request->city,
+            'address' => $request->address,
+            'account_number' => $request->account_number,
+            'id_number' => $request->id_number,
+            'tax_number' => $request->tax_number,
+            'zip_code' => $request->zip_code,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            ]
 
-        $this->clientService->store($validated);
+    );
+    return response()->json(['success'=> "Client Added Success"]);
+        // $userId = auth()->user()->id;
+        // $validated = $request->validated();
+        // $validated['user_id'] = $userId;
 
-        return redirect('/clients');
+        // $this->clientService->store($validated);
+
+        // return redirect('/clients');
     }
     
 
@@ -91,7 +127,9 @@ class ClientsController extends Controller
      */
     public function edit($id)
     {
-        return view('clients.edit')->with('clients', $this->clientService->findById($id));
+        $clients = Client::find($id);
+        return response()->json($clients);
+        // return view('clients.edit')->with('clients', $this->clientService->findById($id));
     }
 
     /**
@@ -118,7 +156,10 @@ class ClientsController extends Controller
      */
     public function destroy($id)
     {
-         $this->clientService->delete($id);
-         return redirect("/clients");
+        Client::find($id)->delete();
+        //  $this->clientService->delete($id);
+        //  return redirect("/clients");
+    return response()->json(['success'=> "Client Deleted Success"]);
+
     }
 }

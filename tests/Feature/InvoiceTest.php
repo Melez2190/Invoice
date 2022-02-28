@@ -22,6 +22,7 @@ class InvoiceTest extends TestCase
     protected function validData()
     {
         $client = Client::factory()->create();
+
         $data = [
             'client_id' => $client->id,
             'date_of_issue' => '2022-03-09',
@@ -31,6 +32,7 @@ class InvoiceTest extends TestCase
         return $data;
         
     }
+ 
     public function test_create_invoice()
     {
         $this->bootWithTestUser();
@@ -39,26 +41,38 @@ class InvoiceTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('invoices', [
             'created_by' => $this->user->id,
-            
         ]);
     }
 
-    // public function test_update_invoice()
-    // {
-    //     $this->bootWithTestUser();
-    //     $client = Client::factory()->create();
+    public function test_update_invoice()
+    {
+        $this->bootWithTestUser();
+        $client = Client::factory()->create();
 
-    //     $invoice = Invoice::factory()->create([
-    //         'client_id' => $client->id,
-    //         'date_of_issue' => '2022-03-01',
-    //         'valuta'  => '2022-04-22',
-    //         'status' => 0,
-    //     ]);
-    //     $response = $this->json('PUT', "/invoices/{$invoice->id}", $this->validData());
-    //     $response->assertRedirect();
+        $invoice = Invoice::factory()->create([
+            'client_id' => $client->id,
+            'date_of_issue' => '2022-03-01',
+            'valuta'  => '2022-04-22',
+            'status' => 0,
+        ]);
 
-    //     $this->assertDatabaseHas('invoices', [
-    //         'updated_by' => $this->user->id,
-    //     ]);
-    // }
+        $response = $this->json('PUT', "/invoices/{$invoice->id}", $this->validData());
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('invoices', [
+            'updated_by' => $this->user->id,
+        ]);
+    }
+    public function test_delete_invoice()
+    {
+        $this->bootWithTestUser();
+
+       
+        $invoice = Invoice::factory()->create($this->validData());
+        $response = $this->json('DELETE', "/invoices/{$invoice->id}");
+
+   
+        $response->assertRedirect();
+        $this->assertSoftDeleted('invoices', ['id' => $invoice->id]);
+    }
 }

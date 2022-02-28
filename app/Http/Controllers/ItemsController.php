@@ -6,6 +6,8 @@ use App\Http\Requests\ItemStoreRequest;
 use Illuminate\Http\Request;
 use App\Services\ItemService;
 use App\Models\Item;
+use Facade\FlareClient\Http\Response;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ItemsController extends Controller
@@ -131,10 +133,10 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id) 
     {
-      
-        $this->itemService->delete($id);
+        
+        $this->itemService->destroy($id);
         return back();
            
     }

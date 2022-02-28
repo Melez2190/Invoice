@@ -6,19 +6,34 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <title>{{ config('app.name', 'Quantox invoice') }}</title>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
 
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <!-- Scripts -->
     <script src="/js/app.js" defer></script>
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-    
+    @yield('css')
     <!-- Styles -->
     {{-- <link href="{{ mix('css/app.css') }}" rel="stylesheet"> --}}
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body class="bg-gray-100 h-screen antialiased leading-none font-sans">
-    <div id="app">
+@routes    
+<div id="app">
         <header class="bg-blue-900 py-6 sticky top-0 z-50">
             <div class="container mx-auto flex justify-between items-center px-6">
                 <div>
@@ -99,3 +114,4 @@
 
         @yield('content')
     </div>
+    @yield('javascript')

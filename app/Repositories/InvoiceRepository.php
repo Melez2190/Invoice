@@ -54,24 +54,26 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
     public function store(array $data)
     {
         $invoice =  $this->model->create($data);
+
         return $invoice;
     }
-    // public function updatestatus($request, $id)
-    // { 
-      
-    // }
-
-    public function update($request, $id)
-    {
+    public function updatestatus($request, $id)
+    { 
         if(isset($_POST['btn-status'])){
             return $this->model::where('id', $id)->update([
                   'status' => request()->input('status')
               ]);
           }
+    }
+
+    public function update($data, $id)
+    {
+    //  dd($data);  
         if(isset($_POST['btn-ostalo'])){
-            return $this->model::where('id', $id)->update([ 
-                'date_of_issue' => request()->input('date_of_issue'),
-                'valuta' => request()->input('valuta')
+            return $this->model::where('id', $id)->update([
+                'date_of_issue' => $data[0],
+                'valuta'        => $data[1],
+                'updated_by'    => auth()->user()->id
             ]);
         }
     }

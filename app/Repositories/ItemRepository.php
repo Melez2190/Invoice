@@ -64,13 +64,20 @@ class ItemRepository implements RepositoryInterface, ItemRepositoryInterface
     {
        return  $this->findById($id)->delete();
     }
+
     public function restore($id)
     {
         return $this->model::withTrashed()->find($id)->restore();
     }
+
     public function delete($id)
     {
-        return $this->findTrashed($id)->forceDelete();
+        // 
+    }
+    
+    public function destroy($id)
+    {
+        return $this->findById($id)->forceDelete();
     }
 
 

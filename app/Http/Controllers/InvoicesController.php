@@ -121,13 +121,12 @@ class InvoicesController extends Controller
     {
         
         if(isset($_POST['btn-status'])){
-            $this->invoiceService->update(request()->input('status'), $id);
-
+            $this->invoiceService->updatestatus(request()->input('status'), $id);
         }
         if(isset($_POST['btn-ostalo'])){
             $this->invoiceService->update([
                 request()->input('date_of_issue'),
-                request()->input('valuta')
+                request()->input('valuta'),
             ], $id);
 
         }
