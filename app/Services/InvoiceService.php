@@ -19,10 +19,10 @@ class InvoiceService
      * Display a listing of the resource. Returning all invoices from DB
      *
      */
-    public function all()
+    public function all($attributes)
     {
        
-        return $this->invoiceRepository->all();
+        return $this->invoiceRepository->all($attributes);
     }
 
     /**
@@ -54,8 +54,10 @@ class InvoiceService
      * @param int  $data - boolean (0,1)
      * @return \Illuminate\Http\Response
      */
-    public function updatestatus(int $data, int $id) 
+    public function updatestatus($data, int $id) 
     {
+        // dd($data);
+        // dd($data['status']);
         return $this->invoiceRepository->updatestatus($data, $id);
     }
 

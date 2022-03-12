@@ -10,6 +10,9 @@ use App\Models\Item;
 use App\Services\InvoiceService;
 use App\Http\Requests\InvoiceStoreRequest;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
+
 
 class InvoicesController extends Controller
 {
@@ -27,10 +30,78 @@ class InvoicesController extends Controller
      */
     public function index(Request $request)
     {
+
+         if($request->ajax()){
+            if(!empty($request->from_date))
+            {
+                $invoices = Invoice::with('client')->whereBetween('date_of_issue', [$request->from_date, $request->to_date])
+                ->get();
+               
+            }else{
+                $invoices = $this->invoiceService->all($request->all());
+
+
+            }
+            // $items = Item::with('invoices')->get();
+            // foreach($items as $item) {
+            //     dd($item);
+
+            // }
+            $count_total = Invoice::count();
+            $count_filter = Invoice::count();
+             return Datatables::of($invoices)
+                ->setOffset($request['start']) 
+                ->with([
+                    "recordsTotal" => $count_total,
+                    "recordsFiltered" => $count_filter,
+                ])
+                ->addIndexColumn()
+                ->editColumn('client.name', function($invoice){
+                    return '<td><a href="'.route('clients.show', $invoice->client->id).'">'.$invoice->client->name.'</a><td> ';
+                 })
+                ->addColumn('status', function($data){
+                    if ($data->status == 0) return 'Not paid';
+                    if ($data->status == 1) return 'Paid';
+                })
+                ->addColumn('action', function($row){
+                   
+                    $html = '<a href="javascript:void(0)" data-toogle="tooltip"  data-id="'.$row->id.'"data-original-title="EditPaid" class="btn-paid bg-yellow-500  text-white shadow-5xl mb-10 w-12 p-1 uppercase font-bold">Status</a> ';
+                    $html .= '<a href="javascript:void(0)" data-toogle="tooltip"  data-id="'.$row->id.'"data-original-title="" id="btn-view" class="btn-view bg-green-500  text-white shadow-5xl mb-10 p-1 uppercase font-bold">View</a> ';
+                    $html .= '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Edit" class="btn-edit bg-blue-500  text-white shadow-5xl mb-10 p-1 uppercase font-bold">Edit</a> ';
+                    $html .= '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Delete" class="btn-delete bg-red-500  text-white shadow-5xl mb-10 p-1 uppercase font-bold">Delete</a> ';
+                    $html .= '<a href="/invoices/'.$row->id.'" data-toogle="tooltip"  data-id="'.$row->id.'"data-original-title="" class=" bg-purple-500  text-white shadow-5xl mb-10 p-1 uppercase font-bold">Detail</a> ';
+
+                    return $html;
+                })
+                ->rawColumns(['action', 'client.name'])
+                ->make(true);
+            
+        }
+
         return view('invoices.index', [
-                'invoices' => $this->invoiceService->all()->withQueryString()
+                'invoices' => Item::with('invoices')->get()
         ]);
+    
     }
+
+
+    public function getInvoicesClient(Request $request){
+        $search = $request->search;
+  
+        if($search == ''){
+           $clients = Client::orderby('name','asc')->select('id','name')->limit(5)->get();
+        }else{
+           $clients = Client::orderby('name','asc')->select('id','name')->where('name', 'like', '%' .$search . '%')->limit(5)->get();
+        }
+        $response = array();
+        foreach($clients as $client){
+           $response[] = array(
+                "id"=>$client->id,
+                "text"=>$client->name
+           );
+        }
+        return response()->json($response); 
+     } 
 
     /**
      * Show the form for creating a new resource.
@@ -53,11 +124,16 @@ class InvoicesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(InvoiceStoreRequest $request)
+    public function store(Request $request)
     {      
-        $validate = $request->validated();
-         $this->invoiceService->store($validate);
-        return redirect("/invoices");
+        Invoice::create([
+            'client_id' => $request->client,
+            'date_of_issue' => $request->date_of_issue,
+             'valuta' => $request->valuta
+             
+        ]);
+       
+        return response()->json(['success'=> "Invoice Added Success"]);
     }
 
     /**
@@ -66,9 +142,12 @@ class InvoicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show( $id)
     {
+      
+   
         $items = Item::where('invoice_id', '=', $id)->get();
+        
 
         if(auth()->user()->id === $this->invoiceService->findbyId($id)->client->user_id){
             return view('invoices.show', [
@@ -101,13 +180,12 @@ class InvoicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {  
-        return view('/invoices.edit',[
-            'invoice' => Invoice::find($id),
-            'client' => Client::find($id)
-        ]);
-
+        $invoice = $this->invoiceService->findById($id);
+        if($request->ajax()){
+            return response()->json($invoice);
+        }
     }
 
     /**
@@ -120,21 +198,32 @@ class InvoicesController extends Controller
     public function update(Request $request, $id)
     {
         
-        if(isset($_POST['btn-status'])){
-            $this->invoiceService->updatestatus(request()->input('status'), $id);
-        }
-        if(isset($_POST['btn-ostalo'])){
-            $this->invoiceService->update([
-                request()->input('date_of_issue'),
-                request()->input('valuta'),
-            ], $id);
 
-        }
-        // $data = $request->validated();
+        $data = Invoice::find($id);
+        
+        $data->update([
+           'date_of_issue' => $request->date_of_issue,
+           'valuta' => $request->valuta,
+        
+       ]);
+       $this->invoiceService->update($data, $id);
+     
+       return response()->json(['success'=> "Invoice Edited Success"]);
+
+    }
+
+    public function changeStatus(Request $request)
+    {
       
-       
-        return redirect('/invoices');
+        if($request->status == "Paid"){
+            $request->status = 0;
+        }else{
+            $request->status = 1;
+        }
+            $this->invoiceService->updatestatus($request->status, $request->id);
+        
 
+        return response()->json(['success'=>'Status changed successfully.']);
     }
 
     /**
@@ -145,7 +234,8 @@ class InvoicesController extends Controller
      */
     public function destroy($id)
     {
+     
          $this->invoiceService->delete($id);
-         return redirect("/invoices");
+         return response()->json(['success'=> "Client Deleted Success"]);
     }
 }

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ItemStoreRequest;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Services\ItemService;
 use App\Models\Item;
+use Yajra\DataTables\DataTables;
+
 use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,11 +27,24 @@ class ItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    // public function index(Request $request)
+    // {
+    //     // if($request->ajax()){
+    //     //     $items = Item::all();
+    //     //     return response($items);
+    //     // }
+    //     return view('invoices.show', [
+    //         'items' => $this->itemService->all()
+    //      ]);
+    // }
+
+
+    public function index(Request $request)
     {
-        return view('invoices.show', [
-            'items' => $this->itemService->all()
-         ]);
+        dd("index je");
+    
+            return view('items.index');
+        
     }
 
     /**
@@ -47,12 +63,23 @@ class ItemsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ItemStoreRequest $request)
+    public function store(Request $request)
     {
-        $validate = $request->validated();
-        $item = $this->itemService->store($validate);
+        Item::create([
+            'invoice_id' => $request->invoice_id,
+            'description' => $request->description,
+             'quantity' => $request->quantity,
+             'price' => $request->price,
+             'pdv' => $request->pdv
+             
+        ]);
+       
+        return response()->json(['success'=> "Item Added Success"]);
 
-        return redirect("/invoices/$item->invoice_id")->with('success', 'Item added Successful');
+        // $validate = $request->validated();
+        // $item = $this->itemService->store($validate);
+
+        // return redirect("/invoices/$item->invoice_id")->with('success', 'Item added Successful');
     }
 
     /**
@@ -61,9 +88,33 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-   
+    public function show(Request $request, $id)
+     {
+        $items = Item::where('invoice_id', '=', $id)->get();
+
+
+        if($request->ajax()){
+            $items = Item::where('invoice_id', '=', $id)->get();
+    
+            return Datatables::of($items)
+                ->addIndexColumn()
+                ->addColumn('total', function($row){
+                    $html =  (number_format((float)($row->quantity * $row->price)+(($row->quantity * $row->price)/100)*$row->pdv, 2 ));
+                    return $html;
+                })
+                ->addColumn('action', function($row){
+                   
+                    $html = '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Edit" class="btn-edit-item bg-blue-500  text-white shadow-5xl mb-10 p-1 uppercase font-bold">Edit</a> ';
+                    $html .= '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Delete" class="btn-delete-item bg-red-500  text-white shadow-5xl mb-10 p-1 uppercase font-bold">Delete</a> ';
+                    return $html;
+                })
+                ->rawColumns(['action', 'total'])
+                ->make(true);
+          }
+    
+
+            return view('items.show');
+ 
     }
 
     /**
@@ -72,20 +123,13 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        if($this->itemService->findById($id)){
-            $invoice_id = $this->itemService->findById($id)->invoice_id;
-        }else {
-            return abort(404);
-        }
-
         $item = $this->itemService->findById($id);
-
-        return view('/items.edit',[
-            'invoice' => $invoice_id,
-            'item' => $item
-        ]);
+        if($request->ajax()){
+            return response()->json($item);
+        }
+ 
     }
 
     /**
@@ -95,13 +139,20 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update( ItemStoreRequest $request, $id)
+    public function update( Request $request, $id)
     {
-        $invoice = $this->itemService->findRelationWithInvoice($id);
+        $data = Item::find($id);
+        $data->update([
+           'description' => $request->description,
+           'quantity' => $request->quantity,
+           'price' => $request->price,
+           'pdv' => $request->pdv,
         
-        $validated = $request->validated();
-         $this->itemService->update($validated, $id);
-        return redirect("/invoices/$invoice");
+       ]);
+      
+         $this->itemService->update($data, $id);
+       return response()->json(['success'=> "Item Edited Success"]);
+
     }
 
 
@@ -133,11 +184,14 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id) 
+    public function destroy(Request $request, int $id) 
     {
+       
+            $this->itemService->destroy($id);
+            return response()->json(['success'=> "Client Deleted Success"]);
         
-        $this->itemService->destroy($id);
-        return back();
-           
+       
+       
+       
     }
 }

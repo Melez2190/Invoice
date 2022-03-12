@@ -97,7 +97,7 @@ class ItemService
      */
     public function destroy(int $id)
     {
-        return $this->itemRepository->destroy($id);
+        return $this->itemRepository->delete($id);
     }
 
 }

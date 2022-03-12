@@ -9,6 +9,7 @@ use App\Services\ClientService;
 use App\Models\Invoice;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 
@@ -32,24 +33,43 @@ class ClientsController extends Controller
     {
      
       if($request->ajax()){
-        $clients = $this->clientService->all();
+        $clients = $this->clientService->all($request->all());
+        $search = $request->search['value'];
+        $count_total = Client::count();
+        $count_filter = Client::count();
+
+        if($request->search['value'] != Null){
+            $count_filter = Client::where('name' , 'LIKE' , '%'. $search.'%')
+            ->orWhere( 'city' , 'LIKE' , '%'. $search.'%')
+            ->orWhere( 'address' , 'LIKE' , '%'. $search.'%')
+            ->orWhere( 'account_number' , 'LIKE' , '%'. $search.'%')
+            ->orWhere( 'email' , 'LIKE' , '%'. $search.'%')->count();
+        }
+       
         return Datatables::of($clients)
+            ->setOffset($request['start']) 
+            ->with([
+                "recordsTotal" => $count_total,
+                "recordsFiltered" => $count_filter,
+            ])
             ->addIndexColumn()
+            ->addColumn('name', function($data){
+               return '<a href="'.route('clients.show',$data->id).'">'.$data->name.'</a> ';
+            })
             ->addColumn('action', function($row){
                 $html = '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Edit" class="btn-edit bg-blue-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Edit</a> ';
                 $html .= '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Delete" class="btn-delete bg-red-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Delete</a> ';
-                // $actionBtn = '<a href="javascript:void(0)" data-id="'.$row->id.'"  data-bs-toggle="modal" data-bs-target="#editModal" class="edit  bg-blue-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold  btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete  bg-red-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold btn btn-danger btn-sm">Delete</a>';
                 return $html;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'name'])
             ->make(true);
       }
-        return view('clients.index' , [
-            'clients' => $this->clientService->all()
-        ]);
+
+        return view('clients.index');
       
         
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -72,7 +92,7 @@ class ClientsController extends Controller
         // dd($request);
         // dd($request->client_id);
         $userId = auth()->user()->id;
-        Client::updateOrCreate(['id' => $request->client_id],
+        Client::create(
             [
             'user_id' => $userId,
             'name' => $request->name,
@@ -104,7 +124,7 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $client = $this->clientService->findById($id);
         $invoices = Invoice::where('client_id', '=', $id)->where('status', '=', false)->with('items')->get('id');
@@ -117,6 +137,7 @@ class ClientsController extends Controller
         }else {
             return redirect('/clients');
         }
+   
     }
 
     /**
@@ -139,13 +160,28 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ClientStoreRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $data = $request->validated();
-        if (Auth::user()->id === $this->clientService->findById($id)->user_id) {
-            $this->clientService->update($data, $id);
-        }
-        return redirect('/clients');
+        $userId = auth()->user()->id;
+
+         $data = Client::find($id);
+         
+         $data->update([
+            'user_id' => $userId,
+            'name' => $request->name,
+            'city' => $request->city,
+            'address' => $request->address,
+            'account_number' => $request->account_number,
+            'id_number' => $request->id_number,
+            'tax_number' => $request->tax_number,
+            'zip_code' => $request->zip_code,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+        ]);
+        $this->clientService->update($data, $id);
+      
+        return response()->json(['success'=> "Client Added Success"]);
+
     }
 
     /**
@@ -156,10 +192,8 @@ class ClientsController extends Controller
      */
     public function destroy($id)
     {
-        Client::find($id)->delete();
-        //  $this->clientService->delete($id);
-        //  return redirect("/clients");
-    return response()->json(['success'=> "Client Deleted Success"]);
+        $this->clientService->delete($id);
+        return response()->json(['success'=> "Client Deleted Success"]);
 
     }
 }

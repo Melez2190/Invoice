@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Client;
 
 use App\Repositories\ClientRepository;
+use Attribute;
 
 //use Illuminate\Support\Str;
 
@@ -22,9 +23,9 @@ class ClientService
      * Display a listing of the resource.
      *
      */
-    public function all() 
+    public function all($attributes) 
     {
-        return $this->clientRepository->all();
+        return $this->clientRepository->all($attributes);
     }
 
       /**
@@ -70,6 +71,7 @@ class ClientService
      */
     public function delete(int $id)
     {
+       
         return $this->clientRepository->delete($id);
 
     }

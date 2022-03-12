@@ -24,23 +24,25 @@ class ClientRepository implements RepositoryInterface, ClientRepositoryInterface
         {
             $this->model = $model;
         }
+
+        
         public function findByRelation()
         {
             return $this->model::where('user_id', '=', auth()->user()->id);
         }
-        public function all()
-        {
-           return $this->findByRelation()->get();
-        //      return $this->findByRelation()->filter(request([
-        //             'client_name',
-        //             'city',
-        //             'email',
-        //             'tax_number',
-        //             'id_number'
-        //         ]))->orderBy('name')
-        //         ->paginate(10);
-        // }
+
+        public function all($attributes)
+        {  
+            if($attributes['search']['value'] != NULL){
+                return $this->model->where('name' , 'LIKE' , '%'.$attributes['search']['value'].'%')
+                                    ->orWhere( 'city' , 'LIKE' , '%'.$attributes['search']['value'].'%')
+                                    ->orWhere( 'address' , 'LIKE' , '%'.$attributes['search']['value'].'%')
+                                    ->orWhere( 'account_number' , 'LIKE' , '%'.$attributes['search']['value'].'%')
+                                    ->orWhere( 'email' , 'LIKE' , '%'.$attributes['search']['value'].'%')->get();      
+           }
+           return $this->findByRelation()->skip($attributes['start'])->take($attributes['length'])->get();
         }
+        
         public function findById(int $id): ?Client
         {
             if($this->model->find($id)){
@@ -67,9 +69,15 @@ class ClientRepository implements RepositoryInterface, ClientRepositoryInterface
           
         }
 
+        /**
+         * Remove the specified resource from storage.
+         *
+         * @param  int  $id
+         * @return \Illuminate\Http\Response
+         */
         public function delete($id)
         {
-           $this->findById($id)->delete();
+           $this->findById($id)->forceDelete();
         }
   
 

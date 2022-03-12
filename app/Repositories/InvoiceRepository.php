@@ -25,24 +25,41 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
         $this->model = $model;
     }
     
+
+    
+     /**
+     * Find invoice by relations. 
+     *
+     */
     public function findByRelation()
     {
         return $this->model::whereRelation('client', 'user_id', '=', auth()->user()->id);
     }
     
-    public function all()
-    {
-        return $this->findByRelation()->filter(request([
-            'client_name',
-            'date_of_issue',
-            'to_date_of_issue',
-            'valuta',
-            'tovaluta',
-            'status_true',
-            'status'
-        ]))->paginate(10);
+
+     /**
+     * Display a listing of the resource. 
+     *
+     * @param  array  $attributes - [start, length, search]
+     * @return \Illuminate\Http\Response
+     */
+    public function all($attributes)
+    {  
+
+        if($attributes['search']['value'] != NULL){
+            return $this->model->with('client')->get();
+         
+              
+        }
+
+        return $this->model->skip($attributes['start'])->take($attributes['length'])->with('client')->get();
     }
 
+     /**
+     * Find invoice by id. 
+     * * @param  int  $id 
+     *
+     */
     public function findById(int $id)
     {
         if($this->model->find($id)){
@@ -51,35 +68,60 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
             return abort(404);
         }
     }
+
+    /**
+     * Store a new invoice in DB 
+     *
+     * @param  array  $data
+     */
     public function store(array $data)
     {
         $invoice =  $this->model->create($data);
 
         return $invoice;
     }
+
+    /**
+     * changing payment status
+     *
+     * @param  int  $request - [0, 1]
+     * @param  int  $id 
+     * @return \Illuminate\Http\Response
+     */
     public function updatestatus($request, $id)
     { 
-        if(isset($_POST['btn-status'])){
-            return $this->model::where('id', $id)->update([
-                  'status' => request()->input('status')
-              ]);
-          }
+        $invoice = $this->findById($id);
+        $invoice->status = $request;
+        $invoice->save();
+
+        return $invoice;
     }
 
+      /**
+     * Update the specified resource in storage.
+     *
+     * @param  $data 
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update($data, $id)
     {
-    //  dd($data);  
-        if(isset($_POST['btn-ostalo'])){
-            return $this->model::where('id', $id)->update([
-                'date_of_issue' => $data[0],
-                'valuta'        => $data[1],
-                'updated_by'    => auth()->user()->id
-            ]);
-        }
+        return $this->model::where('id', $id)->update([
+            'date_of_issue' => $data->date_of_issue,
+            'valuta'        => $data->valuta,
+            'updated_by'    => auth()->user()->id
+        ]);
+        
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function delete($id)
     {
-        $this->findById($id)->delete();
+        $this->findById($id)->forceDelete();
     }
 }

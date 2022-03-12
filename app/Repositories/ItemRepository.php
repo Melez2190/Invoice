@@ -56,7 +56,13 @@ class ItemRepository implements RepositoryInterface, ItemRepositoryInterface
 
     public function update($data, $id)
     {
-      return $this->findById($id)->update($data);    
+      return $this->findById($id)->update([
+        'description' => $data->description,
+        'quantity' => $data->quantity,
+        'price' => $data->price,
+        'pdv' => $data->pdv,
+      ]);    
+    
 
     }
 
@@ -72,7 +78,8 @@ class ItemRepository implements RepositoryInterface, ItemRepositoryInterface
 
     public function delete($id)
     {
-        // 
+        return $this->findById($id)->forceDelete();
+
     }
     
     public function destroy($id)

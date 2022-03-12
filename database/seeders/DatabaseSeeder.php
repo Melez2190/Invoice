@@ -20,10 +20,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        
-
-        Client::factory(5)->create();
-        Invoice::factory(10)->create();
-        Item::factory(50)->create();
+        Client::factory(50)->create();
+        Invoice::factory(1000)->create();
+        Item::factory(500)->create();
     }
 }

@@ -24,8 +24,8 @@ use App\Http\Controllers\MailController;
 
 Auth::routes();
 Route::get('dev-login', [LoginController::class, 'devLogin'])->name('dev-login');
-
-
+Route::get('invoices/updateStatus', [InvoicesController::class, 'changeStatus'])->name('invoice.changestatus');
+Route::post('/getInvoices', [InvoicesController::class, 'getInvoicesClient'])->name('getInvoicesClient');
 
 
 Route::group(['middleware' => 'auth'], function() {
