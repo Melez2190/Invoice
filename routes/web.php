@@ -9,7 +9,7 @@ use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MailController;
-
+use App\Http\Controllers\TenantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +28,16 @@ Route::get('invoices/updateStatus', [InvoicesController::class, 'changeStatus'])
 Route::post('/getInvoices', [InvoicesController::class, 'getInvoicesClient'])->name('getInvoicesClient');
 
 
+Route::group(['middleware' => 'checkAdmin'], function() {
+    Route::resource('admin/tenants', TenantController::class);
+
+});
+
+
 Route::group(['middleware' => 'auth'], function() {
+    Route::get('setpassword', [\App\Http\Controllers\SetPasswordController::class, 'create'])->name('setpassword');
+    Route::post('setpassword', [\App\Http\Controllers\SetPasswordController::class, 'store'])->name('setpassword.store');
+
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::post('/invoices/archive/{id}', [InvoicesController::class, 'archiveDeleted']);
     Route::delete('/item/delete/{item}', [\App\Http\Controllers\ItemsController::class, 'delete'])->name('item.delete');
@@ -46,8 +55,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/pdf', [\App\Http\Controllers\DynamicPdfController::class, 'index'])->name('index');
     Route::get('/pdf/{id}', [\App\Http\Controllers\DynamicPdfController::class, 'show']);
 
-    Route::get('/download-pdf/{invoice}', [\App\Http\Controllers\DynamicPdfController::class, 'pdf']);
+    Route::get('/download-pdf/{invoice}', [\App\Http\Controllers\DynamicPdfController::class, 'pdf'])->name('pdf.receipt');
 });
+
+Route::get('invitation/{user}', [\App\Http\Controllers\TenantController::class, 'invitation'])->name('invitation');
+
 
 
 

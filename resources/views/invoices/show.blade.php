@@ -4,7 +4,7 @@
 
 <div class="ml-48">
    <div class="relative h-24">
-       {{-- @if () --}}
+  
         <form action="/invoices/archive/{{ $invoices->id }}" method="POST">
             @csrf
             
@@ -91,7 +91,7 @@
             <tbody class="bg-white">
                
                
-                   @foreach ($items as $item )
+                   @foreach ($invoices->items as $item )
                        
                 
                 <tr class="whitespace-nowrap">
@@ -130,7 +130,6 @@
                             
                             @csrf
                             @method('DELETE')
-                                 {{-- <input type="hidden" name="_method" value="DELETE"> --}}
                             <a href=""><input type="submit" class="bg-white cursor-pointer" value="&rarr; Remove" ></a>
                           
                         </form>
@@ -142,7 +141,6 @@
                        
                         <a href="{{ route('items.edit', [$item->id]) }}" >&rarr; Edit</a>
                         
-                        {{-- <a href="/invoices/{{ $invoices->id }}/edit">Change status</a> --}}
                         
                     </td>
                 </tr>

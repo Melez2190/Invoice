@@ -58,9 +58,9 @@ class ClientService
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($data, $id) 
+    public function update($data) 
     {
-        return $this->clientRepository->update($data, $id);
+        return $this->clientRepository->update($data);
     }
 
      /**

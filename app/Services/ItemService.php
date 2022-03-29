@@ -62,9 +62,9 @@ class ItemService
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($data,$id)
+    public function update($data)
     {
-        return $this->itemRepository->update($data, $id);
+        return $this->itemRepository->update($data);
     }
 
      /**

@@ -17,6 +17,8 @@ class CreateInvoicesTable extends Migration
             $table->id();
             $table->foreignId('client_id')->references('id')->on('clients')->onUpdate('cascade')
             ->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')
+            ->onDelete('cascade');
             $table->boolean('status')->default('0');
             $table->date('date_of_issue');
             $table->date('valuta');

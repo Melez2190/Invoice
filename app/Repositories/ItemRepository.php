@@ -54,16 +54,13 @@ class ItemRepository implements RepositoryInterface, ItemRepositoryInterface
         return $this->model->create($data);
     }
 
-    public function update($data, $id)
+    public function update($data)
     {
-      return $this->findById($id)->update([
-        'description' => $data->description,
-        'quantity' => $data->quantity,
-        'price' => $data->price,
-        'pdv' => $data->pdv,
-      ]);    
-    
-
+        try{
+            return $this->model->update($data);
+        }catch (\Throwable $e){
+            return redirect('errors.404');
+        }
     }
 
     public function softDelete($id)

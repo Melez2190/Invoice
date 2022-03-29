@@ -58,15 +58,13 @@ class ClientRepository implements RepositoryInterface, ClientRepositoryInterface
             return $this->model->create($data);
         }
 
-        public function update($data, $id)
+        public function update($data)
         {
             try{
-                $client = $this->findById($id);
-                return $client->update($data);
+                return $this->model->update($data);
             }catch (\Throwable $e){
                 return redirect('errors.404');
             }
-          
         }
 
         /**

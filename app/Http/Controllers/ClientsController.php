@@ -31,43 +31,40 @@ class ClientsController extends Controller
 
     public function index(Request $request)
     {
-     
       if($request->ajax()){
-        $clients = $this->clientService->all($request->all());
-        $search = $request->search['value'];
-        $count_total = Client::count();
-        $count_filter = Client::count();
+            $clients = $this->clientService->all($request->all());
+            $search = $request->search['value'];
+            $count_total = Client::count();
+            $count_filter = Client::count();
 
-        if($request->search['value'] != Null){
-            $count_filter = Client::where('name' , 'LIKE' , '%'. $search.'%')
-            ->orWhere( 'city' , 'LIKE' , '%'. $search.'%')
-            ->orWhere( 'address' , 'LIKE' , '%'. $search.'%')
-            ->orWhere( 'account_number' , 'LIKE' , '%'. $search.'%')
-            ->orWhere( 'email' , 'LIKE' , '%'. $search.'%')->count();
-        }
-       
-        return Datatables::of($clients)
-            ->setOffset($request['start']) 
-            ->with([
-                "recordsTotal" => $count_total,
-                "recordsFiltered" => $count_filter,
-            ])
-            ->addIndexColumn()
-            ->addColumn('name', function($data){
-               return '<a href="'.route('clients.show',$data->id).'">'.$data->name.'</a> ';
-            })
-            ->addColumn('action', function($row){
-                $html = '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Edit" class="btn-edit bg-blue-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Edit</a> ';
-                $html .= '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Delete" class="btn-delete bg-red-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Delete</a> ';
-                return $html;
-            })
-            ->rawColumns(['action', 'name'])
-            ->make(true);
+            if($request->search['value'] != Null){
+                $count_filter = Client::where('name' , 'LIKE' , '%'. $search.'%')
+                ->orWhere( 'city' , 'LIKE' , '%'. $search.'%')
+                ->orWhere( 'address' , 'LIKE' , '%'. $search.'%')
+                ->orWhere( 'account_number' , 'LIKE' , '%'. $search.'%')
+                ->orWhere( 'email' , 'LIKE' , '%'. $search.'%')->count();
+            }
+        
+            return Datatables::of($clients)
+                ->setOffset($request['start']) 
+                ->with([
+                    "recordsTotal" => $count_total,
+                    "recordsFiltered" => $count_filter,
+                ])
+                ->addIndexColumn()
+                ->addColumn('name', function($data){
+                return '<a href="'.route('clients.show',$data->id).'">'.$data->name.'</a> ';
+                })
+                ->addColumn('action', function($row){
+                    $html = '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Edit" class="btn-edit bg-blue-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Edit</a> ';
+                    $html .= '<a href="javascript:void(0)" data-toogle="tooltip" data-id="'.$row->id.'"data-original-title="Delete" class="btn-delete bg-red-500  text-white shadow-5xl mb-10 p-2 uppercase font-bold">Delete</a> ';
+                    return $html;
+                })
+                ->rawColumns(['action', 'name'])
+                ->make(true);
       }
 
-        return view('clients.index');
-      
-        
+        return view('clients.index'); 
     }
 
 
@@ -89,12 +86,8 @@ class ClientsController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
-        // dd($request->client_id);
-        $userId = auth()->user()->id;
-        Client::create(
-            [
-            'user_id' => $userId,
+        $data = [
+            'user_id' => auth()->user()->id,
             'name' => $request->name,
             'city' => $request->city,
             'address' => $request->address,
@@ -104,17 +97,12 @@ class ClientsController extends Controller
             'zip_code' => $request->zip_code,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
-            ]
-
-    );
-    return response()->json(['success'=> "Client Added Success"]);
-        // $userId = auth()->user()->id;
-        // $validated = $request->validated();
-        // $validated['user_id'] = $userId;
-
-        // $this->clientService->store($validated);
-
-        // return redirect('/clients');
+        ];
+        $this->clientService->store($data);
+        if($request->ajax()){
+            return response()->json(['success'=> "Client Added Success"]);
+        }
+        return redirect('/clients');
     }
     
 
@@ -124,20 +112,17 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, Request $request)
+    public function show(Client $client)
     {
-        $client = $this->clientService->findById($id);
-        $invoices = Invoice::where('client_id', '=', $id)->where('status', '=', false)->with('items')->get('id');
-        
+        $invoices = Invoice::where('client_id', '=', $client->id)->where('status', '=', false)->with('items')->get('id');
         if(auth()->user()->id === $client->user_id){
             return view('clients.show', [
-                'client' =>  $this->clientService->findById($id),
+                'client' =>  $client,
                 'invoices' => $invoices
             ]);
         }else {
             return redirect('/clients');
         }
-   
     }
 
     /**
@@ -148,9 +133,7 @@ class ClientsController extends Controller
      */
     public function edit($id)
     {
-        $clients = Client::find($id);
-        return response()->json($clients);
-        // return view('clients.edit')->with('clients', $this->clientService->findById($id));
+        return response()->json($this->clientService->findById($id));
     }
 
     /**
@@ -160,14 +143,10 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Client $client)
     {
-        $userId = auth()->user()->id;
-
-         $data = Client::find($id);
-         
-         $data->update([
-            'user_id' => $userId,
+        $client->update([
+            'user_id' => auth()->user()->id,
             'name' => $request->name,
             'city' => $request->city,
             'address' => $request->address,
@@ -178,10 +157,9 @@ class ClientsController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
         ]);
-        $this->clientService->update($data, $id);
+        $this->clientService->update($client);
       
         return response()->json(['success'=> "Client Added Success"]);
-
     }
 
     /**
@@ -194,6 +172,5 @@ class ClientsController extends Controller
     {
         $this->clientService->delete($id);
         return response()->json(['success'=> "Client Deleted Success"]);
-
     }
 }

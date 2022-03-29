@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use App\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,8 +15,22 @@ class Item extends Model
 
     protected $table = 'items';
     protected $primaryKey = 'id';
-    protected $fillable = ['invoice_id', 'description', 'quantity', 'price', 'pdv', 'created_by', 'updated_by'];
+    protected $fillable = ['invoice_id', 'description', 'quantity', 'price', 'pdv', 'created_by', 'updated_by', 'user_id'];
     protected $dates = ['deleted_at'];
+
+
+
+     /**
+    * The "booting" method of the model.
+    *
+    * @return void
+    */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new TenantScope);
+    }
 
     public function invoices() {
         return $this->belongsTo(Invoice::class, 'invoice_id');

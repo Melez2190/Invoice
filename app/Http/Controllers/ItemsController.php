@@ -27,24 +27,9 @@ class ItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function index(Request $request)
-    // {
-    //     // if($request->ajax()){
-    //     //     $items = Item::all();
-    //     //     return response($items);
-    //     // }
-    //     return view('invoices.show', [
-    //         'items' => $this->itemService->all()
-    //      ]);
-    // }
-
-
-    public function index(Request $request)
+     public function index(Request $request)
     {
-        dd("index je");
-    
             return view('items.index');
-        
     }
 
     /**
@@ -65,21 +50,20 @@ class ItemsController extends Controller
      */
     public function store(Request $request)
     {
-        Item::create([
+        $data = [
             'invoice_id' => $request->invoice_id,
             'description' => $request->description,
              'quantity' => $request->quantity,
              'price' => $request->price,
-             'pdv' => $request->pdv
-             
-        ]);
-       
-        return response()->json(['success'=> "Item Added Success"]);
+             'pdv' => $request->pdv,
+             'user_id' => auth()->user()->id
+        ];
+        $this->itemService->store($data);
 
-        // $validate = $request->validated();
-        // $item = $this->itemService->store($validate);
-
-        // return redirect("/invoices/$item->invoice_id")->with('success', 'Item added Successful');
+        if($request->ajax()){
+            return response()->json(['success'=> "Item Added Success"]);
+        }
+        return redirect("/invoices/$request->invoice_id")->with('success', 'Item added Successful');
     }
 
     /**
@@ -88,14 +72,10 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request,$id)
      {
-        $items = Item::where('invoice_id', '=', $id)->get();
-
-
         if($request->ajax()){
             $items = Item::where('invoice_id', '=', $id)->get();
-    
             return Datatables::of($items)
                 ->addIndexColumn()
                 ->addColumn('total', function($row){
@@ -111,10 +91,7 @@ class ItemsController extends Controller
                 ->rawColumns(['action', 'total'])
                 ->make(true);
           }
-    
-
-            return view('items.show');
- 
+         return view('items.show');
     }
 
     /**
@@ -125,11 +102,9 @@ class ItemsController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $item = $this->itemService->findById($id);
         if($request->ajax()){
-            return response()->json($item);
+            return response()->json($this->itemService->findById($id));
         }
- 
     }
 
     /**
@@ -139,19 +114,17 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update( Request $request, $id)
+    public function update( Request $request, Item $item)
     {
-        $data = Item::find($id);
-        $data->update([
+        $item->update([
            'description' => $request->description,
            'quantity' => $request->quantity,
            'price' => $request->price,
            'pdv' => $request->pdv,
-        
-       ]);
+        ]);
       
-         $this->itemService->update($data, $id);
-       return response()->json(['success'=> "Item Edited Success"]);
+        $this->itemService->update($item);
+        return response()->json(['success'=> "Item Edited Success"]);
 
     }
 
@@ -165,7 +138,6 @@ class ItemsController extends Controller
     public function delete($id)
     {
         $this->itemService->softDelete($id);
-        
         return back();
     }
 
@@ -186,12 +158,7 @@ class ItemsController extends Controller
      */
     public function destroy(Request $request, int $id) 
     {
-       
-            $this->itemService->destroy($id);
-            return response()->json(['success'=> "Client Deleted Success"]);
-        
-       
-       
-       
+        $this->itemService->destroy($id);
+        return response()->json(['success'=> "Client Deleted Success"]);
     }
 }

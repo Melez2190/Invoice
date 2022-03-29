@@ -4,7 +4,7 @@
 @section('content')
 
 
-<div class="ml-44">
+<div class="ml-8 mr-8">
     
 <div class="text-center w-full">
     <table class="w-full border ">

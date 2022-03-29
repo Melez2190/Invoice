@@ -20,8 +20,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Client::factory(50)->create();
-        Invoice::factory(1000)->create();
-        Item::factory(500)->create();
+        $this->call(RoleSeeder::class);
+        $this->call(AdminUserSeeder::class);
     }
 }

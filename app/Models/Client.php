@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,17 @@ class Client extends Model
     protected $fillable = ['id', 'user_id', 'name', 'city', 'address', 'account_number', 'id_number', 'zip_code', 'tax_number', 'email', 'phone_number'];
     protected $dates = ['deleted_at'];
 
+    /**
+    * The "booting" method of the model.
+    *
+    * @return void
+    */
+   protected static function boot()
+   {
+       parent::boot();
 
+       static::addGlobalScope(new TenantScope);
+   }
 
     public function invoices() {
         return $this->hasMany(Invoice::class);

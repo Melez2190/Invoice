@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Client;
+use App\Scopes\TenantScope;
 use Illuminate\Notifications\Notifiable;
 
 class Invoice extends Model
@@ -14,10 +15,21 @@ class Invoice extends Model
     
     protected $table = 'invoices';
     protected $primaryKey = 'id';
-    protected $fillable = ['client_id', 'date_of_issue', 'valuta', 'created_by', 'updated_by'];
+    protected $fillable = ['client_id', 'date_of_issue', 'valuta', 'created_by', 'updated_by', 'user_id'];
     protected $dates = ['deleted_at'];
 
-    
+     /**
+    * The "booting" method of the model.
+    *
+    * @return void
+    */
+   protected static function boot()
+   {
+       parent::boot();
+
+       static::addGlobalScope(new TenantScope);
+   }
+
     public function client() {
         return $this->belongsTo(Client::class, 'client_id');
     }

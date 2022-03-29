@@ -13,7 +13,6 @@
 
 
 <div class="flex justify-center pt-2" >
-
     <form action="{{ route('invoices.store') }}" method="POST">
         
         @csrf
@@ -24,6 +23,7 @@
             <select name="client_id">
             @foreach ($clients as $client )
                 <option class="block shadow-5xl mb-10 p-2" value="{{ $client->id }}">{{ $client->name }}</option>
+
             @endforeach
                 
             </select>

@@ -25,6 +25,12 @@ class InvoiceService
         return $this->invoiceRepository->all($attributes);
     }
 
+
+    public function getInvoicesClient($data)
+    {
+        return $this->invoiceRepository->getInvoicesClient($data);
+
+    }
     /**
      * Store a newly created resource in storage.
      * @param \Request\InvoiceStoreRequest $request - array $data
@@ -68,9 +74,9 @@ class InvoiceService
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($data, $id)
+    public function update($data)
     {
-        return $this->invoiceRepository->update($data, $id);
+        return $this->invoiceRepository->update($data);
 
     }
 

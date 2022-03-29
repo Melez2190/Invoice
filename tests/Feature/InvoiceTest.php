@@ -21,8 +21,9 @@ class InvoiceTest extends TestCase
     
     protected function validData()
     {
-        $client = Client::factory()->create();
+        $this->bootWithTestUser();
 
+        $client = Client::factory()->create();
         $data = [
             'client_id' => $client->id,
             'date_of_issue' => '2022-03-09',
@@ -36,6 +37,7 @@ class InvoiceTest extends TestCase
     public function test_create_invoice()
     {
         $this->bootWithTestUser();
+        
 
         $response = $this->json('POST', '/invoices', $this->validData());
         $response->assertRedirect();

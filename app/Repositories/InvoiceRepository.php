@@ -69,6 +69,25 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
         }
     }
 
+
+    public function getInvoicesClient($request)
+    {
+        $search = $request->search;
+  
+        if($search == ''){
+           $clients = Client::orderby('name','asc')->select('id','name')->limit(5)->get();
+        }else{
+           $clients = Client::orderby('name','asc')->select('id','name')->where('name', 'like', '%' .$search . '%')->limit(5)->get();
+        }
+        $response = array();
+        foreach($clients as $client){
+           $response[] = array(
+                "id"=>$client->id,
+                "text"=>$client->name
+           );
+        }
+        return response()->json($response); 
+    }
     /**
      * Store a new invoice in DB 
      *
@@ -104,14 +123,13 @@ class InvoiceRepository implements RepositoryInterface, InvoiceRepositoryInterfa
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($data, $id)
+    public function update($data)
     {
-        return $this->model::where('id', $id)->update([
-            'date_of_issue' => $data->date_of_issue,
-            'valuta'        => $data->valuta,
-            'updated_by'    => auth()->user()->id
-        ]);
-        
+        try{
+            return $this->model->update($data);
+        }catch (\Throwable $e){
+            return redirect('errors.404');
+        }
     }
 
     /**
