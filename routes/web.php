@@ -28,13 +28,15 @@ Route::get('invoices/updateStatus', [InvoicesController::class, 'changeStatus'])
 Route::post('/getInvoices', [InvoicesController::class, 'getInvoicesClient'])->name('getInvoicesClient');
 
 
-Route::group(['middleware' => 'checkAdmin'], function() {
-    Route::resource('admin/tenants', TenantController::class);
 
-});
 
 
 Route::group(['middleware' => 'auth'], function() {
+    Route::group(['middleware' => 'checkAdmin'], function() {
+        Route::resource('admin/tenants', TenantController::class);
+    
+    });
+
     Route::get('setpassword', [\App\Http\Controllers\SetPasswordController::class, 'create'])->name('setpassword');
     Route::post('setpassword', [\App\Http\Controllers\SetPasswordController::class, 'store'])->name('setpassword.store');
 

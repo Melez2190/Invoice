@@ -14,7 +14,10 @@
 
 @section('content')
     <div class="ml-12 mr-12">
+        @can('user_auth')
         <a href="javascript:void(0)" id="createNewClient" class=" bg-blue-500  absolute right-8 top-24 px-8 text-white shadow-5xl mb-10 p-2 uppercase font-bold">Add New Client</a>
+            
+        @endcan
        
         <table id="clientsTable" class="mb-12 mt-4 w-full table table-hover dataTable table-custom table-striped m-b-0 c_list" style="width:100%">
 

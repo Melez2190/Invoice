@@ -74,6 +74,7 @@ class ItemsController extends Controller
      */
     public function show(Request $request,$id)
      {
+        
         if($request->ajax()){
             $items = Item::where('invoice_id', '=', $id)->get();
             return Datatables::of($items)

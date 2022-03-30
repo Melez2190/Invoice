@@ -7,6 +7,7 @@ use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ClientService;
 use App\Models\Invoice;
+use App\Models\User;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,8 @@ class ClientsController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('user_auth');
+        
       if($request->ajax()){
             $clients = $this->clientService->all($request->all());
             $search = $request->search['value'];
@@ -73,7 +76,7 @@ class ClientsController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(User $user)
     {
         return view('clients.create');
     }

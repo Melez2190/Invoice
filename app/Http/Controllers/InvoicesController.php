@@ -29,6 +29,7 @@ class InvoicesController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('user_auth');
          if($request->ajax()){
             if(!empty($request->from_date)){
                 $invoices = Invoice::with('client')->whereBetween('date_of_issue', [$request->from_date, $request->to_date])
