@@ -31,6 +31,8 @@ or simply download the zipped file
 
 7.php artisan db:seed
 
+8.Login with admin@admin.com email and '12345678' password
+
 
 ## Download invoice in pdf
 
